@@ -1,7 +1,8 @@
 import numpy
 from .BoardConstants import BoardConstants as BC
 from .Microboard import Microboard
-from .Exceptions import InvalidMacroboardMoveException
+from exceptions import InvalidMacroboardMoveException
+
 
 class Macroboard:
     'Represents the "big" tic tac toe board composed of nine Microboards'

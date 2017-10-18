@@ -1,6 +1,7 @@
 import numpy
 from .BoardConstants import BoardConstants as BC
-from .Exceptions import InvalidMicroboardMoveException
+from exceptions import InvalidMicroboardMoveException
+
 
 class Microboard:
     """ Represents a small (3x3) tic-tac-toe board """
