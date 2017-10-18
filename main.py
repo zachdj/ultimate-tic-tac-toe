@@ -1,31 +1,17 @@
-from game.Microboard import Microboard
+from game.Macroboard import Macroboard
 
-board = Microboard()
+board = Macroboard()
 
-print(board.board_completed)
-print("%s \n\n" % board)
+board.make_move(1, 0, 0, 0, 0)
+board.make_move(1, 0, 0, 1, 1)
+board.make_move(1, 0, 0, 2, 2)
+board.make_move(1, 1, 1, 0, 0)
+board.make_move(1, 1, 1, 1, 1)
+board.make_move(1, 1, 1, 2, 2)
+board.make_move(1, 2, 2, 0, 0)
+board.make_move(1, 2, 2, 1, 1)
+board.make_move(1, 2, 2, 2, 2)
 
-board.make_move(1, 0, 0)
-print("%s \n\n" % board)
-
-
-board.make_move(2, 0, 2)
-print("%s \n\n" % board)
-
-
-board.make_move(2, 1, 2)
-print("%s \n\n" % board)
-
-
-board.make_move(1, 1, 0)
-print("%s \n\n" % board)
-
-
-board.make_move(1, 2, 0)
-print("%s \n\n" % board)
-
-board.make_move(2, 2, 2)
-print("%s \n\n" % board)
-
+print(board)
 print(board.board_completed)
 print(board.winner)
