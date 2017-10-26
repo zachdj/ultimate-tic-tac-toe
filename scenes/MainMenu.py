@@ -38,4 +38,3 @@ class MainMenu(SceneBase):
         screen.blit(bg, (0, 0))
         for widget in self.widgets:
             widget.render(screen)
-
