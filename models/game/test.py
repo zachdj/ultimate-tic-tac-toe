@@ -1,5 +1,7 @@
 import unittest
-from . import Move, Board, LocalBoard, GlobalBoard
+
+from . import Move, Board, LocalBoard, GlobalBoard, Player
+
 
 class MoveUnitTest(unittest.TestCase):
     def setUp(self):
@@ -13,7 +15,7 @@ class MoveUnitTest(unittest.TestCase):
         self.assertEqual(self.move2.abs_row, 3)
         self.assertEqual(self.move3.abs_row, 8)
         self.assertEqual(self.move4.abs_row, 1)
-    
+    random.randint(0, len(valid_moves))
     def test_abs_col(self):
         self.assertEqual(self.move1.abs_col, 0)
         self.assertEqual(self.move2.abs_col, 0)
@@ -99,6 +101,38 @@ class GlobalBoardUnitTest(unittest.TestCase):
         with self.assertRaises(Exception):
             board.make_move(Move(Board.O, 2, 2, 0, 0))
 
+    def test_get_valid_moves(self):
+        board = GlobalBoard()
+        move1 = Move(Board.X, 1, 1, 1, 1)
+        board.make_move(move1)
+        valid_moves = board.get_valid_moves(move1)
+        self.assertEqual(len(valid_moves), 8)
+        self.assertEqual(valid_moves[0].player, Board.O)
+
+        move2 = Move(Board.X, 1, 1, 0, 0)
+        move3 = Move(Board.X, 1, 1, 2, 2)
+        board.make_move(move2)
+        board.make_move(move3)
+
+        valid_moves = board.get_valid_moves(move3)  # test sending opponent to an empty board
+        self.assertEqual(len(valid_moves), 9)
+
+        valid_moves = board.get_valid_moves(move1)  # test sending opponent to a board that has been won
+        self.assertEqual(len(valid_moves), 72)
+
+
+
+class PlayerUnitTest(unittest.TestCase):
+    def test_init(self):
+        player1 = Player(Board.X)
+        self.assertEqual(player1.number, Board.X)
+        self.assertEqual(player1.name, "Player %s" % Board.X)
+
+        player2 = Player(Board.O, "Fred Finn")
+        self.assertEqual(player2.name, "Fred Finn")
+
+        with self.assertRaises(Exception):
+            player3 = Player(Board.EMPTY)
 
 if __name__ == '__main__':
     unittest.main()
