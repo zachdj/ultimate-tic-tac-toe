@@ -1,4 +1,4 @@
-from . import Move, Board, LocalBoard, GlobalBoard, Player
+from . import Move, Board, LocalBoard, GlobalBoard, Player, Bot
 
 
 class Game(object):
@@ -11,6 +11,7 @@ class Game(object):
         self.board = GlobalBoard()
         self.player1 = player1
         self.player2 = player2
+        self.bot_game = isinstance(player1, Bot) and isinstance(player2, Bot)
         self.moves = []
 
     def make_move(self, move):
@@ -21,7 +22,6 @@ class Game(object):
         """
         self.board.make_move(move)
         self.moves.append(move)
-
 
     def get_valid_moves(self):
         """
