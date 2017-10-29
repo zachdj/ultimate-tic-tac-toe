@@ -1,23 +1,23 @@
 from .Board import Board
-from .Microboard import Microboard
+from .LocalBoard import LocalBoard
 
 
-class Macroboard(Board):
+class GlobalBoard(Board):
     """  Represents the meta-board composed of a 3x3 grid of smaller tic-tac-toe boards
     """
     def __init__(self):
         Board.__init__(self)
-        self.board = [[Microboard(), Microboard(), Microboard()],
-                      [Microboard(), Microboard(), Microboard()],
-                      [Microboard(), Microboard(), Microboard()]]
+        self.board = [[LocalBoard(), LocalBoard(), LocalBoard()],
+                      [LocalBoard(), LocalBoard(), LocalBoard()],
+                      [LocalBoard(), LocalBoard(), LocalBoard()]]
 
     def make_move(self, move):
         """  Overrides Board.make_move
         """
-        microboard = self.board[move.metarow][move.metacol]
-        if microboard.board_completed:
+        local_board = self.board[move.metarow][move.metacol]
+        if local_board.board_completed:
             raise Exception("Invalid move.  That meta-board is already completed")
-        microboard.make_move(move)
+            local_board.make_move(move)
         self.total_moves += 1
 
         self.check_board_completed(move.metarow, move.metacol)
@@ -27,8 +27,8 @@ class Macroboard(Board):
         """
         if row < 0 or row > 2 or col < 0 or col > 2:
             raise Exception("Requested meta-cell is out of bounds")
-        microboard = self.board[row][col]
-        return microboard.winner
+        local_board = self.board[row][col]
+        return local_board.winner
 
     def __str__(self):
         representation = ""

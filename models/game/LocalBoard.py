@@ -2,7 +2,7 @@ import numpy
 from .Board import Board
 
 
-class Microboard(Board):
+class LocalBoard(Board):
     """  Represents a traditional 3x3 tic tac toe board
     """
     def __init__(self):
@@ -19,7 +19,6 @@ class Microboard(Board):
     def make_move(self, move):
         """  Overrides Board.make_move
         """
-
         if self.board[move.row][move.col] != Board.EMPTY:
             raise Exception("You cannot make a move in an occupied slot")
 
