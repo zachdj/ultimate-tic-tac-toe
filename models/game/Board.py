@@ -10,6 +10,7 @@ class Board(object):
     O = 2
     O_WIN_COND = O * 3
     EMPTY = -2
+    CAT = -3  # value representing a board that was completed but tied
 
     def __init__(self):
         self.board_completed = False
@@ -66,7 +67,7 @@ class Board(object):
         completed_boards = 0
         for row in [0, 1, 2]:
             for col in [0, 1, 2]:
-                if self.check_cell(row, col) in [Board.X, Board.O]:
+                if self.check_cell(row, col) in [Board.X, Board.O, Board.CAT]:
                     completed_boards += 1
 
         if completed_boards == 9:

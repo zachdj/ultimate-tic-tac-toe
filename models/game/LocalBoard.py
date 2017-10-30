@@ -8,6 +8,7 @@ class LocalBoard(Board):
     def __init__(self):
         Board.__init__(self)
         self.board = numpy.ones((3, 3)) * Board.EMPTY
+        self.cats_game = False
 
     def check_cell(self, row, col):
         """  Overrides Board.check_cell
@@ -25,6 +26,9 @@ class LocalBoard(Board):
         self.board[move.row][move.col] = move.player
         self.total_moves += 1
         self.check_board_completed(move.row, move.col)
+
+        if self.total_moves == 9 and self.winner != Board.X and self.winner != Board.O:
+            self.cats_game = True
 
     def __str__(self):
         representation = ""

@@ -7,7 +7,7 @@ class BogoBot(Bot):
     This bot moves at random
     """
     def __init__(self, number):
-        Bot.__init__(number, "BogoBot")
+        Bot.__init__(self, number, "BogoBot")
         self.player_type = 'rng bot'
         random.seed()
 

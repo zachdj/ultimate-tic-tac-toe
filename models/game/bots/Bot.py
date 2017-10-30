@@ -6,7 +6,7 @@ class Bot(Player):
     """
 
     def __init__(self, number, name=None):
-        Player.__init__(number, name)
+        Player.__init__(self, number, name)
         self.player_type = 'generic bot'
 
     def compute_next_move(self, board, valid_moves):

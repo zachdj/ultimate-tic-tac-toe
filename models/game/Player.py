@@ -14,3 +14,9 @@ class Player(object):
             self.name = name
         else:
             self.name = "Player %s" % number
+
+    def get_player_symbol(self):
+        """ Gets the symbol ('X' or 'O') for the given player
+        :return: Board.X if player is the 'X' player;  Board.O if the player is the 'O' player
+        """
+        return self.number

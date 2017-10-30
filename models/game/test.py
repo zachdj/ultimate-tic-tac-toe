@@ -1,6 +1,6 @@
 import unittest
 
-from . import Move, Board, LocalBoard, GlobalBoard, Player
+from . import Move, Board, LocalBoard, GlobalBoard, Player, Game
 
 
 class MoveUnitTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class MoveUnitTest(unittest.TestCase):
         self.assertEqual(self.move2.abs_row, 3)
         self.assertEqual(self.move3.abs_row, 8)
         self.assertEqual(self.move4.abs_row, 1)
-    random.randint(0, len(valid_moves))
+
     def test_abs_col(self):
         self.assertEqual(self.move1.abs_col, 0)
         self.assertEqual(self.move2.abs_col, 0)
@@ -66,16 +66,36 @@ class LocalBoardUnitTest(unittest.TestCase):
 
     def test_game_over(self):
         # win a board and check the winner
-        move_seq1 = [
+        move_seq = [
             Move(Board.X, 0, 0, 0, 0),
             Move(Board.X, 0, 0, 1, 1),
             Move(Board.X, 0, 0, 2, 2)
         ]
         board = LocalBoard()
-        for move in move_seq1:
+        for move in move_seq:
             board.make_move(move)
         self.assertTrue(board.board_completed)
         self.assertEqual(board.winner, Board.X)
+
+        # tie a board and check for cat
+        move_seq = [
+            Move(Board.X, 0, 0, 0, 0),
+            Move(Board.O, 0, 0, 0, 1),
+            Move(Board.X, 0, 0, 0, 2),
+            Move(Board.O, 0, 0, 1, 0),
+            Move(Board.O, 0, 0, 1, 1),
+            Move(Board.X, 0, 0, 1, 2),
+            Move(Board.X, 0, 0, 2, 0),
+            Move(Board.X, 0, 0, 2, 1),
+            Move(Board.O, 0, 0, 2, 2)
+        ]
+        board = LocalBoard()
+        for move in move_seq:
+            board.make_move(move)
+        self.assertTrue(board.board_completed)
+        self.assertTrue(board.cats_game)
+        self.assertEqual(board.winner, Board.EMPTY)
+
 
 class GlobalBoardUnitTest(unittest.TestCase):
     def test_moves(self):
@@ -121,7 +141,6 @@ class GlobalBoardUnitTest(unittest.TestCase):
         self.assertEqual(len(valid_moves), 72)
 
 
-
 class PlayerUnitTest(unittest.TestCase):
     def test_init(self):
         player1 = Player(Board.X)
@@ -133,6 +152,79 @@ class PlayerUnitTest(unittest.TestCase):
 
         with self.assertRaises(Exception):
             player3 = Player(Board.EMPTY)
+
+
+class GameUnitTest(unittest.TestCase):
+    def test_tied_game(self):
+        moves = [
+            Move(Board.X, 1, 0, 2, 2),
+            Move(Board.O, 2, 2, 1, 1),
+            Move(Board.X, 1, 1, 2, 2),
+            Move(Board.O, 2, 2, 2, 2),
+            Move(Board.X, 2, 2, 2, 0),
+            Move(Board.O, 2, 0, 1, 2),
+            Move(Board.X, 1, 2, 0, 1),
+            Move(Board.O, 0, 1, 0, 0),
+            Move(Board.X, 0, 0, 0, 0),
+            Move(Board.O, 0, 0, 0, 1),
+            Move(Board.X, 0, 1, 1, 0),
+            Move(Board.O, 1, 0, 2, 1),
+            Move(Board.X, 2, 1, 1, 1),
+            Move(Board.O, 1, 1, 1, 0),
+            Move(Board.X, 1, 0, 2, 0),
+            Move(Board.O, 2, 0, 2, 2),
+            Move(Board.X, 2, 2, 1, 0),
+            Move(Board.O, 1, 0, 0, 2),
+            Move(Board.X, 0, 2, 2, 1),
+            Move(Board.O, 2, 1, 0, 1),
+            Move(Board.X, 0, 1, 2, 2),
+            Move(Board.O, 2, 2, 0, 1),
+            Move(Board.X, 0, 1, 2, 0),
+            Move(Board.O, 2, 0, 0, 0),
+            Move(Board.X, 0, 0, 1, 1),
+            Move(Board.O, 1, 1, 2, 1),
+            Move(Board.X, 2, 1, 2, 1),
+            Move(Board.O, 2, 1, 0, 0),
+            Move(Board.X, 0, 0, 1, 0),
+            Move(Board.O, 1, 0, 0, 0),
+            Move(Board.X, 0, 0, 2, 0),
+            Move(Board.O, 2, 0, 0, 1),
+            Move(Board.X, 0, 1, 2, 1),
+            Move(Board.O, 2, 1, 1, 0),
+            Move(Board.X, 1, 0, 1, 2),
+            Move(Board.O, 1, 2, 1, 2),
+            Move(Board.X, 1, 2, 0, 0),
+            Move(Board.O, 1, 2, 1, 0),
+            Move(Board.X, 1, 0, 1, 1),
+            Move(Board.O, 1, 1, 0, 1),
+            Move(Board.X, 2, 0, 1, 1),
+            Move(Board.O, 1, 1, 1, 2),
+            Move(Board.X, 1, 2, 0, 2),
+            Move(Board.O, 0, 2, 1, 1),
+            Move(Board.X, 1, 1, 1, 1),
+            Move(Board.O, 1, 1, 2, 0),
+            Move(Board.X, 2, 0, 0, 2),
+            Move(Board.O, 0, 2, 1, 2),
+            Move(Board.X, 2, 1, 0, 2),
+            Move(Board.O, 0, 2, 1, 0),
+            Move(Board.X, 1, 0, 1, 0),
+            Move(Board.O, 2, 1, 2, 2),
+            Move(Board.X, 2, 2, 0, 0),
+            Move(Board.O, 2, 0, 2, 0),
+            Move(Board.X, 2, 0, 2, 1),
+            Move(Board.O, 2, 1, 1, 2),
+            Move(Board.X, 2, 0, 1, 0),
+            Move(Board.O, 1, 1, 0, 0),
+            Move(Board.X, 2, 1, 2, 0),
+        ]
+        p1 = Player(Board.X)
+        p2 = Player(Board.O)
+        game = Game(p1, p2)
+        for move in moves:
+            game.make_move(move)
+
+        self.assertTrue(game.is_game_over())
+        self.assertEqual(game.get_winner(), Board.EMPTY)
 
 if __name__ == '__main__':
     unittest.main()

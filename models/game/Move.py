@@ -26,3 +26,6 @@ class Move(object):
         # abs_row, abs_col represent the location of the move on a 9x9 grid
         self.abs_row = metarow*3 + row
         self.abs_col = metacol*3 + col
+
+    def __str__(self):
+        return "Player %s made a move at (%s, %s, %s, %s)" % (self.player, self.metarow, self.metacol, self.row, self.col)

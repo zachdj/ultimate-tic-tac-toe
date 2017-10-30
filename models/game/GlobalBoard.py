@@ -30,7 +30,10 @@ class GlobalBoard(Board):
         if row < 0 or row > 2 or col < 0 or col > 2:
             raise Exception("Requested meta-cell is out of bounds")
         local_board = self.board[row][col]
-        return local_board.winner
+        if local_board.cats_game:
+            return Board.CAT
+        else:
+            return local_board.winner
 
     def get_valid_moves(self, last_move):
         """
@@ -103,3 +106,18 @@ class GlobalBoard(Board):
 
         return representation
 
+    def to_high_level_string(self):
+        representation = ""
+        for i in [0, 1, 2]:
+            for j in [0, 1, 2]:
+                symbol = 'X'
+                if self.board[i][j].winner == Board.O:
+                    symbol = 'O'
+                elif self.board[i][j].cats_game:
+                    symbol = 'C'
+                elif self.board[i][j].winner == Board.EMPTY:
+                    symbol = '_'
+                representation += symbol
+            representation += "\n"
+
+        return representation
