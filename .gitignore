@@ -102,3 +102,6 @@ ENV/
 
 # Jetbrains IDE folder
 .idea
+
+# local user settings
+settings.py
