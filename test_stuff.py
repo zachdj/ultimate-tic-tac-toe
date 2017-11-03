@@ -2,7 +2,9 @@
 Temporary module for running human tests
 """
 from models.game import *
+from models.data import DatabaseConnection as DB, GameDataModel
 import timeit
+
 
 p1_wins = 0
 p2_wins = 0
@@ -17,6 +19,7 @@ print("Playing %s games... \n" % total_games)
 start_time = timeit.default_timer()
 
 for i in list(range(0, total_games)):
+    print("Playing game %s..." % (i+1))
     game = Game(p1, p2)
     winner = game.finish_game()
     if winner == Board.X:
@@ -27,6 +30,12 @@ for i in list(range(0, total_games)):
         ties += 1
 
     total_moves += len(game.moves)
+
+    game_data = GameDataModel(game)
+    game_data.save()
+
+DB.close()
+
 
 elapsed = timeit.default_timer() - start_time
 
