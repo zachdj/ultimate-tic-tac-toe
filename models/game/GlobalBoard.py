@@ -35,6 +35,22 @@ class GlobalBoard(Board):
         else:
             return local_board.winner
 
+    def check_small_cell(self, metarow, metacol, row, col):
+        """
+        Gets the value of a small cell on the board
+        :param metarow: the row of the local board containing the desired cell
+        :param metacol: the col of the local board containing the desired cell
+        :param row: the row of the desired cell within the local board
+        :param col: the col of the desired cell within the local board
+        :return: Board.X if the cell is captured by player 1, Board.O for player 2, or Board.EMPTY if not captured
+        """
+
+        if row < 0 or row > 2 or col < 0 or col > 2 or metarow < 0 or metarow > 2 or metacol < 0 or metacol > 2:
+            raise Exception("Requested cell is out of bounds")
+
+        local_board = self.board[metarow][metacol]
+        return local_board.check_cell(row, col)
+
     def get_valid_moves(self, last_move):
         """
         Returns an array of valid moves following the specified last move
