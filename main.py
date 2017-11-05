@@ -17,7 +17,7 @@ p1 = BogoBot(Board.X)
 p2 = Player(Board.O)
 game_scene = PlayGame(p1, p2)
 
-active_scene = game_scene # MainMenu(screen)  # TODO
+active_scene = MainMenu(screen)  # TODO
 
 while active_scene != None:
     pressed_keys = pygame.key.get_pressed()

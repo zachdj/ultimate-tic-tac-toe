@@ -29,7 +29,7 @@ def get_image(path):
 
 
 def get_main_menu_bg():
-    return get_image(build_image_path("mm_bg.jpg"))
+    return get_image(build_image_path("mm_bg.png"))
 
 
 def get_game_bg():
