@@ -13,9 +13,9 @@ clock = pygame.time.Clock()
 
 ### TEST CODE : TODO: remove ###
 
-p1 = Player(Board.X)
-p2 = BogoBot(Board.O)
-game_scene = PlayGame(screen, p1, p2)
+p1 = BogoBot(Board.X)
+p2 = Player(Board.O)
+game_scene = PlayGame(p1, p2)
 
 active_scene = game_scene # MainMenu(screen)  # TODO
 
@@ -39,8 +39,8 @@ while active_scene != None:
                 quit_attempt = True
         elif event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION]:
             # transform from actual screen coordinates to logical coordinates
-            scaling_factor_x = LOGICAL_WIDTH / screen.get_width()
-            scaling_factor_y = LOGICAL_HEIGHT / screen.get_height()
+            scaling_factor_x = LOGICAL_WIDTH / screen_size[0]
+            scaling_factor_y = LOGICAL_HEIGHT / screen_size[1]
             event.pos = (event.pos[0]*scaling_factor_x, event.pos[1]*scaling_factor_y)
 
         if quit_attempt:

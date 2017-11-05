@@ -1,11 +1,15 @@
+import pygame, numpy, threading, time
 from .SceneBase import SceneBase
 from models.game import Game, Board, Move
 from services import ImageService
-import pygame, numpy, threading
 
 
 class PlayGame(SceneBase):
-    def __init__(self, screen, player1, player2):
+    """
+    This scene shows a graphical representation of a game between two players
+    If one or both of the players are human, then it allows that player to make moves with a mouse
+    """
+    def __init__(self, player1, player2):
         SceneBase.__init__(self)
         # calculate constants used for drawing later
         # (these are all done in the fixed transform space, so we can safely use constants)
