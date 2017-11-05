@@ -29,3 +29,10 @@ class Move(object):
 
     def __str__(self):
         return "Player %s made a move at (%s, %s, %s, %s)" % (self.player, self.metarow, self.metacol, self.row, self.col)
+
+    def __eq__(self, other):
+        return self.player == other.player and self.metarow == other.metarow and self.metacol == other.metacol \
+            and self.row == other.row and self.col == other.col
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

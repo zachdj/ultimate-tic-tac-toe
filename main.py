@@ -1,6 +1,7 @@
 import pygame
 from scenes import *
 from models.game import *  # TODO: remove
+from models.game import BogoBot
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -13,7 +14,7 @@ clock = pygame.time.Clock()
 ### TEST CODE : TODO: remove ###
 
 p1 = Player(Board.X)
-p2 = Player(Board.O)
+p2 = BogoBot(Board.O)
 game_scene = PlayGame(screen, p1, p2)
 
 active_scene = game_scene # MainMenu(screen)  # TODO

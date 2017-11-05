@@ -9,6 +9,9 @@ class Bot(Player):
         Player.__init__(self, number, name)
         self.player_type = 'generic bot'
 
+    def is_bot(self):
+        return True
+
     def compute_next_move(self, board, valid_moves):
         """
         Computes the next move for this agent
