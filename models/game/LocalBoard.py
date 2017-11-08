@@ -30,6 +30,12 @@ class LocalBoard(Board):
         if self.total_moves == 9 and self.winner != Board.X and self.winner != Board.O:
             self.cats_game = True
 
+    def clone(self):
+        new_local_board = LocalBoard()
+        new_local_board.board = numpy.copy(self.board)
+        new_local_board.cats_game = self.cats_game
+        return new_local_board
+
     def __str__(self):
         representation = ""
         for row in [0, 1, 2]:

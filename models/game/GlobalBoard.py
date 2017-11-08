@@ -5,12 +5,16 @@ from .Move import Move
 
 class GlobalBoard(Board):
     """  Represents the meta-board composed of a 3x3 grid of smaller tic-tac-toe boards
+    the optional 'board' parameter is used internally clone GlobalBoard objects
     """
-    def __init__(self):
+    def __init__(self, board=None):
         Board.__init__(self)
-        self.board = [[LocalBoard(), LocalBoard(), LocalBoard()],
-                      [LocalBoard(), LocalBoard(), LocalBoard()],
-                      [LocalBoard(), LocalBoard(), LocalBoard()]]
+        if board is not None:
+            self.board = board
+        else:
+            self.board = [[LocalBoard(), LocalBoard(), LocalBoard()],
+                          [LocalBoard(), LocalBoard(), LocalBoard()],
+                          [LocalBoard(), LocalBoard(), LocalBoard()]]
 
     def make_move(self, move):
         """  Overrides Board.make_move
@@ -101,6 +105,12 @@ class GlobalBoard(Board):
                 moves.append(Move(player, metarow, metacol, row, col))
 
         return moves
+
+    def clone(self):
+        cloned_board = [[self.board[0][0].clone(), self.board[0][1].clone(), self.board[0][2].clone()],
+                        [self.board[1][0].clone(), self.board[1][1].clone(), self.board[1][2].clone()],
+                        [self.board[2][0].clone(), self.board[2][1].clone(), self.board[2][2].clone()]]
+        return GlobalBoard(board=cloned_board)
 
     def __str__(self):
         representation = ""
