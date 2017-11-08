@@ -4,7 +4,7 @@ from models.game.Board import Board
 """ BoardDataModel class
 
 The BoardDataModel class encapsulates the low-level representation of an Ultimate Tic-Tac-Toe board in the database.
-The low-level representation of a board is a tuple with 86 attributes + a primary key.  
+The low-level representation of a board is a tuple with 85 attributes + a primary key.  
 The primary key is a string representation of the flattened board, where 1 indicates an X, 2 indicates an O, 
     and 0 indicates an empty cell
     
@@ -13,7 +13,6 @@ The 82nd attribute is an identifier for the player whose turn comes next
 Attribute 83 is the number of wins recorded for this board state
 Attribute 84 is the number of losses recorded for this board state
 Attribute 85 is the number of ties recorded for this board state
-Attribute 86 is the id of the game tuple in which this board was found
 
 This class provides a high-level interface for serializing/deserializing models.game.GlobalBoard objects to/from the
 low-level board tuples used by the database
@@ -22,14 +21,13 @@ low-level board tuples used by the database
 
 
 class BoardDataModel(object):
-    def __init__(self, global_board, next_player, game_id):
+    def __init__(self, global_board, next_player):
         """
         Initializes a BoardDataModel
         :param global_board: the models.game.GlobalBoard to represent
         :param next_player: the player who would play next on the board (Board.X or Board.O)
         :param game_id: the id of the parent GameDataModel stored in this DB
         """
-        self.parent_game_id = game_id
         self.next_player = next_player
         self.representation = []
         range = [0, 1, 2]
@@ -55,7 +53,7 @@ class BoardDataModel(object):
         This should only be called if the board doesn't already exist in the database
         :return:
         """
-        insert_script = "INSERT INTO board VALUES ('%s', %s, %s, 0, 0, 0, %s)" % (self.primary_key, self.string_representation, self.next_player, self.parent_game_id)
+        insert_script = "INSERT INTO board VALUES ('%s', %s, %s, 0, 0, 0)" % (self.primary_key, self.string_representation, self.next_player)
         DB.execute(insert_script)
 
     def _check_for_model(self):

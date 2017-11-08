@@ -33,7 +33,6 @@ CREATE_BOARD_TABLE_SCRIPT = '''
       wins INTEGER,
       losses INTEGER,
       ties INTEGER,
-      game_id INTEGER,
       FOREIGN KEY(game_id) REFERENCES game(rowid)
     ) WITHOUT ROWID;
 '''
