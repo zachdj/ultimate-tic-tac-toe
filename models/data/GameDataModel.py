@@ -25,9 +25,9 @@ class GameDataModel(object):
                                 datetime.date.today().strftime("%d/%m/%Y"), len(self.game.moves))
         DB.execute(GAME_INSERT_SCRIPT)
 
-        # get the id of the inserted game tuple
-        cursor = DB.query('SELECT max(rowid) FROM game')
-        game_id = cursor.fetchone()[0]
+        # get the id of the inserted game tuple - TODO: probably no longer need this; may want to redo as many-to-many relation
+        # cursor = DB.query('SELECT max(rowid) FROM game')
+        # game_id = cursor.fetchone()[0]
 
         # save each board state
         board = GlobalBoard()
@@ -37,7 +37,7 @@ class GameDataModel(object):
                 next_player = Board.O
             else:
                 next_player = Board.X
-            board_data = BoardDataModel(board, next_player, game_id)
+            board_data = BoardDataModel(board, next_player)
 
             if self.game.get_winner() == Board.X:
                 board_data.add_win()

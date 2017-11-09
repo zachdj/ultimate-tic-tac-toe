@@ -59,7 +59,15 @@ class Game(object):
             raise Exception("Games can only be finished automatically if both players are bots")
 
         while not self.is_game_over():
-            next_move = self.active_player.compute_next_move(self.board, self.get_valid_moves())
-            self.make_move(next_move)
+            self._take_step()
 
         return self.get_winner()
+
+    def _take_step(self):
+        """ For bot games (where both players are bots), polls the active player for a move and executes the move
+        :return: the selected Move
+        """
+        next_move = self.active_player.compute_next_move(self.board, self.get_valid_moves())
+        self.make_move(next_move)
+        return next_move
+

@@ -32,7 +32,7 @@ CREATE_BOARD_TABLE_SCRIPT = '''
       next_player TINYINT,
       wins INTEGER,
       losses INTEGER,
-      ties INTEGER,
+      ties INTEGER
     ) WITHOUT ROWID;
 '''
 
@@ -87,6 +87,12 @@ def close():
     if _connection:
         _connection.close()
         _connection_open = False
+
+
+def purge_boards(min_games):
+    # removes board states from the database where fewer than min_games have been played
+    PURGE_SCRIPT = "DELETE FROM board WHERE (wins + losses + ties) < %s" % min_games
+    return execute(PURGE_SCRIPT)
 
 
 # Call init when the module is loaded
