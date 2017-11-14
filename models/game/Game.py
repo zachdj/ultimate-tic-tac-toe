@@ -15,6 +15,11 @@ class Game(object):
         self.active_player = player1  # the player who moves next is the active player.  Player 1 always goes first
         self.bot_game = isinstance(player1, Bot) and isinstance(player2, Bot)
         self.moves = []
+        if isinstance(player1, Bot):
+            self.player1.setup_bot(self)
+
+        if isinstance(player2, Bot):
+            self.player2.setup_bot(self)
 
     def make_move(self, move):
         """
@@ -68,6 +73,7 @@ class Game(object):
         :return: the selected Move
         """
         next_move = self.active_player.compute_next_move(self.board, self.get_valid_moves())
+        print(next_move)
         self.make_move(next_move)
         return next_move
 

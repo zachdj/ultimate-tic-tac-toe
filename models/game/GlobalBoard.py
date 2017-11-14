@@ -110,7 +110,27 @@ class GlobalBoard(Board):
         cloned_board = [[self.board[0][0].clone(), self.board[0][1].clone(), self.board[0][2].clone()],
                         [self.board[1][0].clone(), self.board[1][1].clone(), self.board[1][2].clone()],
                         [self.board[2][0].clone(), self.board[2][1].clone(), self.board[2][2].clone()]]
-        return GlobalBoard(board=cloned_board)
+        new_global_board = GlobalBoard(board=cloned_board)
+
+        new_global_board.board_completed = self.board_completed
+        new_global_board.total_moves = self.total_moves
+        new_global_board.winner = self.winner
+        return new_global_board
+
+    def counts(self):
+        x_counts = 0
+        o_counts = 0
+        for i in list(range(0, 9)):
+            metarow = i//3
+            row = i % 3
+            for j in list(range(0, 9)):
+                metacol = j//3
+                col = j % 3
+                cell = self.board[metarow][metacol].check_cell(row, col)
+                if cell == Board.X: x_counts += 1
+                elif cell == Board.O: o_counts += 1
+
+        return x_counts, o_counts
 
     def __str__(self):
         representation = ""

@@ -1,6 +1,6 @@
 from .SceneBase import SceneBase
 from .PlayGame import PlayGame
-from models.game import Player, BogoBot, Board
+from models.game import Player, BogoBot, Board, MonteCarloBot
 from services import ImageService
 from widgets import Button
 
@@ -16,7 +16,7 @@ class MainMenu(SceneBase):
 
         def go_to_singleplayer():
             p1 = Player(Board.X)
-            p2 = BogoBot(Board.O)
+            p2 = MonteCarloBot(Board.O, 5)
             game_scene = PlayGame(p1, p2)
             self.switch_to_scene(game_scene)
 

@@ -34,6 +34,9 @@ class LocalBoard(Board):
         new_local_board = LocalBoard()
         new_local_board.board = numpy.copy(self.board)
         new_local_board.cats_game = self.cats_game
+        new_local_board.board_completed = self.board_completed
+        new_local_board.total_moves = self.total_moves
+        new_local_board.winner = self.winner
         return new_local_board
 
     def __str__(self):

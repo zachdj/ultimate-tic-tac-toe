@@ -27,6 +27,7 @@ class PlayGame(SceneBase):
         self.game = Game(player1, player2)
         # game object needs to be locked when the board is being rendered or when Bot players are ready to make a move
         self.game_lock = threading.Lock()
+        self.bot_is_thinking = False
 
         self.ghost_move = None  # this Move object is used to show human players where their mouse is hovering
 
@@ -77,18 +78,24 @@ class PlayGame(SceneBase):
                         self.game.make_move(self.ghost_move)
 
     def update(self):
-        if self.game.active_player.is_bot():
+        if self.game.is_game_over():
+            self.switch_to_scene(None)
+            print("Game over!  \nCongratulations Player %s" % self.game.get_winner())
+
+        self.game_lock.acquire()
+        bots_turn = self.game.active_player.is_bot()
+        self.game_lock.release()
+        if bots_turn and not self.bot_is_thinking:
+            self.bot_is_thinking = True
+            print("Making bot move")
             def make_bot_move():
                 move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
                 self.game_lock.acquire()
                 self.game.make_move(move)
                 self.game_lock.release()
+                self.bot_is_thinking = False
             bot_thread = threading.Thread(target=make_bot_move)
             bot_thread.start()
-
-        if self.game.is_game_over():
-            self.switch_to_scene(None)
-            print("Game over!  \nCongratulations Player %s" % self.game.get_winner())
 
     def render(self, screen):
         bg = ImageService.get_game_bg()

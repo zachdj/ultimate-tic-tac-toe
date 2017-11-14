@@ -7,3 +7,4 @@ from .Move import Move
 from .Player import Player
 from .bots.Bot import Bot as Bot
 from .bots.BogoBot import BogoBot
+from .bots.MonteCarloBot import MonteCarloBot

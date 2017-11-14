@@ -20,3 +20,12 @@ class Bot(Player):
         :return: the Move object recommended for this agent
         """
         raise Exception("You need to override the compute_next_move method in the child class")
+
+    def setup_bot(self, game):
+        """
+        Game objects will call this function when the bot is initialized.  This allows the bot to perform initial setup
+        using game-level variables if needed
+        :param game: the game object which this bot is a part of
+        :return: None
+        """
+        raise Exception("You need to override the setup_bot method in the child class")
