@@ -147,18 +147,6 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
     DB.close()
 
 
-# full_game_experiment(total_games=3000)
-# mid_game_experiment(starting_boards=300, games_per_board=100)
-# late_game_experiment(starting_boards=300, games_per_board=100)
-
-p1 = BogoBot(Board.X)
-p2 = MonteCarloBot(Board.O, 2)
-game = Game(p1, p2)
-game.finish_game()
-print(game.get_winner())
-# print(game.board)
-# first_move = p1.compute_next_move(game.board, game.get_valid_moves())
-# game.make_move(first_move)
-
-# second_move = p2.compute_next_move(game.board, game.get_valid_moves())
-# print(second_move)
+full_game_experiment(total_games=30)
+mid_game_experiment(starting_boards=5, games_per_board=25)
+late_game_experiment(starting_boards=5, games_per_board=25)

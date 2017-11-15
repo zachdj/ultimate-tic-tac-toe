@@ -19,7 +19,6 @@ CREATE_GAME_TABLE_SCRIPT = '''
 
 CREATE_BOARD_TABLE_SCRIPT = '''
     CREATE TABLE IF NOT EXISTS board(
-      id TEXT PRIMARY KEY,
       p00 TINYINT, p01 TINYINT, p02 TINYINT, p03 TINYINT, p04 TINYINT, p05 TINYINT, p06 TINYINT, p07 TINYINT, p08 TINYINT,
       p10 TINYINT, p11 TINYINT, p12 TINYINT, p13 TINYINT, p14 TINYINT, p15 TINYINT, p16 TINYINT, p17 TINYINT, p18 TINYINT,
       p20 TINYINT, p21 TINYINT, p22 TINYINT, p23 TINYINT, p24 TINYINT, p25 TINYINT, p26 TINYINT, p27 TINYINT, p28 TINYINT,
@@ -32,7 +31,19 @@ CREATE_BOARD_TABLE_SCRIPT = '''
       next_player TINYINT,
       wins INTEGER,
       losses INTEGER,
-      ties INTEGER
+      ties INTEGER,
+      PRIMARY KEY (
+        p00, p01, p02, p03, p04, p05, p06, p07, p08,
+        p10, p11, p12, p13, p14, p15, p16, p17, p18,
+        p20, p21, p22, p23, p24, p25, p26, p27, p28,
+        p30, p31, p32, p33, p34, p35, p36, p37, p38,
+        p40, p41, p42, p43, p44, p45, p46, p47, p48,
+        p50, p51, p52, p53, p54, p55, p56, p57, p58,
+        p60, p61, p62, p63, p64, p65, p66, p67, p68,
+        p70, p71, p72, p73, p74, p75, p76, p77, p78,
+        p80, p81, p82, p83, p84, p85, p86, p87, p88,
+        next_player
+      )
     ) WITHOUT ROWID;
 '''
 

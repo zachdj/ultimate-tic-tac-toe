@@ -42,7 +42,7 @@ class BoardDataModel(object):
                         else:
                             self.representation.append(0)
 
-        self.primary_key = "".join(map(str, self.representation)) + "np%s" % self.next_player
+        # self.primary_key = "".join(map(str, self.representation)) + "np%s" % self.next_player
         self.string_representation = ",".join(map(str, self.representation))
 
         self.processed_representation = None  # TODO
@@ -53,7 +53,7 @@ class BoardDataModel(object):
         This should only be called if the board doesn't already exist in the database
         :return:
         """
-        insert_script = "INSERT INTO board VALUES ('%s', %s, %s, 0, 0, 0)" % (self.primary_key, self.string_representation, self.next_player)
+        insert_script = "INSERT INTO board VALUES (%s, %s, 0, 0, 0)" % (self.string_representation, self.next_player)
         DB.execute(insert_script)
 
     def _check_for_model(self):
@@ -61,7 +61,7 @@ class BoardDataModel(object):
         private function to check if an instance of this board exists in the database
         :return: True if a board with this configuration already exists in the database.  False otherwise
         """
-        cursor = DB.query("SELECT * FROM board WHERE id = '%s' ;" % self.primary_key)
+        cursor = DB.query("SELECT * FROM board %s ;" % self.assemble_key_query())
         return cursor.fetchone() is not None
 
     def add_win(self):
@@ -72,7 +72,7 @@ class BoardDataModel(object):
         if not self._check_for_model():
             self._insert_model()
 
-        ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 WHERE id = '%s' ;" % self.primary_key
+        ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 %s ;" % self.assemble_key_query()
         DB.execute(ADD_WIN_SCRIPT)
 
     def add_loss(self):
@@ -83,7 +83,7 @@ class BoardDataModel(object):
         if not self._check_for_model():
             self._insert_model()
 
-        ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 WHERE id = '%s' ;" % self.primary_key
+        ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 %s ;" % self.assemble_key_query()
         DB.execute(ADD_LOSS_SCRIPT)
 
     def add_tie(self):
@@ -94,5 +94,20 @@ class BoardDataModel(object):
         if not self._check_for_model():
             self._insert_model()
 
-        ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 WHERE id = '%s' ;" % self.primary_key
+        ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 %s ;" % self.assemble_key_query()
         DB.execute(ADD_TIE_SCRIPT)
+
+    def assemble_key_query(self):
+        """
+        Creates the WHERE statement that asks for the board with a matching representation
+        :return: a String "WHERE p00 = <value> AND p01 = <value> ... AND next_player = <value>"
+        """
+        query = "WHERE next_player = %s " % self.next_player
+        for row in list(range(0, 9)):
+            for col in list(range(0, 9)):
+                flattened_index = row * 9 + col
+                attr_query = "AND p%s%s = %s " % (row, col, self.representation[flattened_index])
+                query += attr_query
+
+        return query
+
