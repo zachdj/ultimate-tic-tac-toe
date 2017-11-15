@@ -1,8 +1,8 @@
 import pygame
 from .WidgetBase import WidgetBase
 from services import SettingsService as Settings
-from services import ImageService
 from services import FontService
+from scenes import DrawingUtils
 
 class Button(WidgetBase):
     """ Widget for a clickable button with text
@@ -48,15 +48,13 @@ class Button(WidgetBase):
 
                 self.depressed = False
 
-
     def render(self, surface):
-        normal_img, hover_img, clicked_img = ImageService.get_text_button_sprites()
-        btn_img = normal_img
-        if self.hover: btn_img = hover_img
-        if self.depressed: btn_img = clicked_img
+        border_color = Settings.theme['tertiary']
+        if self.hover: border_color = Settings.theme['primary']
+        if self.depressed: border_color = Settings.theme['secondary']
 
-        btn_img = pygame.transform.scale(btn_img, (self.width, self.height))
-        surface.blit(btn_img, (self.left, self.top))
+        DrawingUtils.aa_border_rounded_rect(surface, pygame.Rect(self.left, self.top, self.width, self.height),
+                                            Settings.theme['tertiary'], border_color)
 
         font = FontService.get_regular_font(round(self.height * 0.40))
         font_color = Settings.theme['font']
