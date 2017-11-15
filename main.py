@@ -1,7 +1,6 @@
 import pygame
 from scenes import *
-from models.game import *  # TODO: remove
-from models.game import BogoBot
+from services import ApplicationStatusService as Status
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -11,13 +10,7 @@ LOGICAL_HEIGHT = 1080
 display = pygame.Surface((LOGICAL_WIDTH, LOGICAL_HEIGHT))  # we will draw on this surface then transform it to screen coordinates
 clock = pygame.time.Clock()
 
-### TEST CODE : TODO: remove ###
-
-p1 = BogoBot(Board.X)
-p2 = Player(Board.O)
-game_scene = PlayGame(p1, p2)
-
-active_scene = MainMenu(screen)  # TODO
+active_scene = MainMenu(screen)
 
 while active_scene != None:
     pressed_keys = pygame.key.get_pressed()
@@ -45,6 +38,7 @@ while active_scene != None:
 
         if quit_attempt:
             active_scene.terminate()
+            Status.terminated = True
         else:
             filtered_events.append(event)
 
@@ -58,4 +52,4 @@ while active_scene != None:
     active_scene = active_scene.next
 
     pygame.display.flip()
-    # clock.tick(120)   # run at a max of 120 fps
+    clock.tick(60)   # run at a max of 60 fps

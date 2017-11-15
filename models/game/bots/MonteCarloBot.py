@@ -1,6 +1,7 @@
 import random, numpy, timeit
 from .Bot import Bot
 from ..Board import Board
+from services import ApplicationStatusService
 
 # TODO: Save MCTS tree and reuse nodes as moves are chosen
 
@@ -11,11 +12,11 @@ class MonteCarloBot(Bot):
     """
     def __init__(self, player, time_limit):
         """
-        Creates a new Monte Carlo Bot
+        Creates a new Monte Carlo Tree Search Bot
         :param player: the player that this bot will play as.  Either Board.X or Board.O
         :param time_limit: The maximum computation time, in seconds
         """
-        Bot.__init__(self, player, time_limit, "Monte Carlo Bot")
+        Bot.__init__(self, player, time_limit, "MCTS Bot")
         self.player_type = 'mc bot'
         self.game = None  # we'll set this in the setup function
 
@@ -30,8 +31,7 @@ class MonteCarloBot(Bot):
         if len(self.game.moves) > 0:
             last_move = self.game.moves[-1]
         root_node = _Node(self.game.board, last_move)
-        elapsed_time = timeit.default_timer() - begin
-        while (timeit.default_timer() - begin) < self.time_limit:
+        while (timeit.default_timer() - begin) < self.time_limit and not ApplicationStatusService.terminated:
             selected_node = root_node.select_node()
             expanded_node = selected_node.expand_node()
             expanded_node.do_playout()

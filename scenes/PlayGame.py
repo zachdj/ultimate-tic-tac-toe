@@ -1,7 +1,8 @@
-import pygame, numpy, threading, time
+import pygame, numpy, threading, timeit
 from .SceneBase import SceneBase
+from .DrawingUtils import *
 from models.game import Game, Board, Move
-from services import ImageService
+from services import ImageService, FontService, SettingsService as Settings
 
 
 class PlayGame(SceneBase):
@@ -11,7 +12,15 @@ class PlayGame(SceneBase):
     """
     def __init__(self, player1, player2):
         SceneBase.__init__(self)
-        # calculate constants used for drawing later
+        # data needed to play the game
+        self.game = Game(player1, player2)
+        # game object needs to be locked when the board is being rendered or when Bot players are ready to make a move
+        self.game_lock = threading.Lock()
+        self.bot_is_thinking = False
+        self.bot_start_time = timeit.default_timer()
+        self.ghost_move = None  # this Move object is used to show human players where their mouse is hovering
+
+        # calculate constants used for rendering
         # (these are all done in the fixed transform space, so we can safely use constants)
         self.MARGIN = 96
         self.CELL_SIZE = 83
@@ -20,16 +29,29 @@ class PlayGame(SceneBase):
         self.BOARD_AREA_X = 1920 - self.MARGIN - 9*(self.CELL_SIZE + self.CELL_SPACING) - 2*self.LOCAL_BOARD_SPACING
         self.BOARD_AREA_Y = self.MARGIN
 
+        # bounding boxes for player info
+        self.P1_BOX = pygame.Rect(self.MARGIN, self.MARGIN, 1920 - 3*self.MARGIN - self.BOARD_AREA_X,
+                                  3*(self.CELL_SIZE + self.CELL_SPACING) - self.LOCAL_BOARD_SPACING )
+        self.P2_BOX = pygame.Rect(self.MARGIN, self.MARGIN + 6*(self.CELL_SIZE + self.CELL_SPACING) + 2*self.LOCAL_BOARD_SPACING,
+                                  1920 - 3*self.MARGIN - self.BOARD_AREA_X, 3*(self.CELL_SIZE + self.CELL_SPACING) - self.LOCAL_BOARD_SPACING )
+
+        # text for player boxes
+        self.FONT_SIZE = 48
+        font_color = Settings.theme['font']
+
+        self.p1_name = FontService.get_regular_font(self.FONT_SIZE)
+        self.p1_name_surface = self.p1_name.render(self.game.player1.name, False, font_color)
+        self.p1_name_size = self.p1_name.size(self.game.player1.name)
+        self.p1_name_location = (self.P1_BOX.centerx - 0.5 * self.p1_name_size[0], self.P1_BOX.top + 0.5 * self.p1_name_size[1] + 10)
+
+        self.p2_name = FontService.get_regular_font(self.FONT_SIZE)
+        self.p2_name_surface = self.p2_name.render(self.game.player2.name, False, font_color)
+        self.p2_name_size = self.p2_name.size(self.game.player1.name)
+        self.p2_name_location = (self.P2_BOX.centerx - 0.5 * self.p2_name_size[0], self.P2_BOX.top + 0.5 * self.p2_name_size[1] + 10)
+
         self.cell_sprites = ImageService.get_board_cell_sprites()
         for key in self.cell_sprites.keys():
             self.cell_sprites[key] = pygame.transform.scale(self.cell_sprites[key], (self.CELL_SIZE, self.CELL_SIZE))
-
-        self.game = Game(player1, player2)
-        # game object needs to be locked when the board is being rendered or when Bot players are ready to make a move
-        self.game_lock = threading.Lock()
-        self.bot_is_thinking = False
-
-        self.ghost_move = None  # this Move object is used to show human players where their mouse is hovering
 
         # compute cell bounding boxes - Each element is a 4-tuple (left, top, right, bottom)
         self.cell_locations = numpy.empty((3, 3, 3, 3), object)
@@ -87,6 +109,7 @@ class PlayGame(SceneBase):
         self.game_lock.release()
         if bots_turn and not self.bot_is_thinking and not self.game.is_game_over():
             self.bot_is_thinking = True
+            self.bot_start_time = timeit.default_timer()
             def make_bot_move():
                 move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
                 self.game_lock.acquire()
@@ -99,6 +122,43 @@ class PlayGame(SceneBase):
     def render(self, screen):
         bg = ImageService.get_game_bg()
         screen.blit(bg, (0, 0))
+
+        # render the info box for player1
+        border_color = Settings.theme['primary'] if self.game.active_player.number == Board.X else Settings.theme['tertiary']
+        # draw box
+        aa_border_rounded_rect(screen, self.P1_BOX, Settings.theme['tertiary'], border_color)
+        screen.blit(self.p1_name_surface, self.p1_name_location)  # player name
+        # render the timestep for player 1
+        timestamp = FontService.get_regular_font(self.FONT_SIZE)
+
+        if self.game.active_player.number == Board.X:
+            time_left = -1
+            if self.game.active_player.is_bot():
+                now = timeit.default_timer()
+                time_left = self.game.active_player.time_limit - (now - self.bot_start_time)
+
+            time_string = seconds_to_timestamp(time_left)
+            p1_time = timestamp.render(time_string, False, Settings.theme['font'])
+            p1_time_size = timestamp.size(time_string)
+            p1_time_location = (self.P1_BOX.centerx - 0.5 * p1_time_size[0], self.P1_BOX.bottom - p1_time_size[1] - 10)
+            screen.blit(p1_time, p1_time_location)
+
+        # render the info box for player2
+        border_color = Settings.theme['secondary'] if self.game.active_player.number == Board.O else Settings.theme['tertiary']
+        # draw box
+        aa_border_rounded_rect(screen, self.P2_BOX, Settings.theme['tertiary'], border_color)
+        screen.blit(self.p2_name_surface, self.p2_name_location) # player 2's name
+        # render the timestep for player 2
+        if self.game.active_player.number == Board.O:
+            time_left = -1
+            if self.game.active_player.is_bot():
+                now = timeit.default_timer()
+                time_left = self.game.active_player.time_limit - (now - self.bot_start_time)
+            time_string = seconds_to_timestamp(time_left)
+            p2_time = timestamp.render(time_string, False, Settings.theme['font'])
+            p2_time_size = timestamp.size(time_string)
+            p2_time_location = (self.P2_BOX.centerx - 0.5 * p2_time_size[0], self.P2_BOX.bottom - p2_time_size[1] - 10)
+            screen.blit(p2_time, p2_time_location)
 
         # render the board
         self.game_lock.acquire()  # need to read values from the board while rendering
@@ -150,3 +210,15 @@ class PlayGame(SceneBase):
 
         for widget in self.widgets:
             widget.render(screen)
+
+
+def seconds_to_timestamp(seconds):
+    if seconds < 0:
+        return "Unlimited"
+
+    whole_s = round(seconds)
+    s = whole_s % 60
+    if s < 10:
+        s = "0%s" % s
+    m = whole_s // 60
+    return "%s:%s" % (m, s)

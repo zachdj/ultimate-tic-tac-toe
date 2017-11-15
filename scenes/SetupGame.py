@@ -57,6 +57,9 @@ class SetupGame(SceneBase):
 
         # these are the selectable options for time limits
         human_time_limit_options = [
+            {"title": "Unlimited", "data": -1}
+        ]
+        bot_time_limit_options = [
             {"title": "0:01", "data": 1},
             {"title": "0:02", "data": 2},
             {"title": "0:03", "data": 3},
@@ -71,10 +74,8 @@ class SetupGame(SceneBase):
             {"title": "2:00", "data": 120},
             {"title": "2:30", "data": 150},
             {"title": "5:00", "data": 300},
-            {"title": "Seriously? More?", "data": 600},
-            {"title": "Unlimited", "data": -1}
+            {"title": "Seriously? More?", "data": 600}
         ]
-        bot_time_limit_options = human_time_limit_options[0:-1]  # exclude the Unlimited option
 
         def p1_time_callback(value):
             self.player1_time_limit = value['data']
