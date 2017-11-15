@@ -6,10 +6,10 @@ The Settings singleton keeps track of application-wide settings
 default_theme = {
     "path_prefix": "default",
     "id": 0,
-    "name": "Classic",
-    "primary": (0, 0, 0),
-    "secondary": (255, 187, 0),
-    "tertiary": (75, 200, 0),
+    "name": "Default",
+    "primary": (117, 64, 160),
+    "secondary": (61, 189, 73),
+    "tertiary": (63, 63, 63),
     "font": (200, 220, 220)
 }
 

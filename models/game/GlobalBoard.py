@@ -58,9 +58,15 @@ class GlobalBoard(Board):
     def get_valid_moves(self, last_move):
         """
         Returns an array of valid moves following the specified last move
+        If last_move is None then all possible moves for the Board.X player will be returned.
+
         :param last_move: the last move to be played on this board
         :return: array of Move objects that are valid to follow the last move
         """
+
+        if last_move is None:
+            return self.get_possible_moves()
+
         valid_moves = []
         player = Board.X
         if last_move.player == Board.X:

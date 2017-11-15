@@ -85,9 +85,8 @@ class PlayGame(SceneBase):
         self.game_lock.acquire()
         bots_turn = self.game.active_player.is_bot()
         self.game_lock.release()
-        if bots_turn and not self.bot_is_thinking:
+        if bots_turn and not self.bot_is_thinking and not self.game.is_game_over():
             self.bot_is_thinking = True
-            print("Making bot move")
             def make_bot_move():
                 move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
                 self.game_lock.acquire()

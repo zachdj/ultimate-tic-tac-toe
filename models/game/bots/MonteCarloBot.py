@@ -15,10 +15,9 @@ class MonteCarloBot(Bot):
         :param player: the player that this bot will play as.  Either Board.X or Board.O
         :param time_limit: The maximum computation time, in seconds
         """
-        Bot.__init__(self, player, "Monte Carlo Bot")
+        Bot.__init__(self, player, time_limit, "Monte Carlo Bot")
         self.player_type = 'mc bot'
         self.game = None  # we'll set this in the setup function
-        self.time_limit = time_limit
 
         random.seed()
 
@@ -31,6 +30,7 @@ class MonteCarloBot(Bot):
         if len(self.game.moves) > 0:
             last_move = self.game.moves[-1]
         root_node = _Node(self.game.board, last_move)
+        elapsed_time = timeit.default_timer() - begin
         while (timeit.default_timer() - begin) < self.time_limit:
             selected_node = root_node.select_node()
             expanded_node = selected_node.expand_node()
@@ -146,6 +146,7 @@ class _Node(object):
             valid_moves = board.get_valid_moves(last_move)
             selected_move = random.choice(valid_moves)
             board.make_move(selected_move)
+            last_move = selected_move
 
         winner = board.winner
         self.backpropogate(winner)

@@ -5,8 +5,9 @@ class Player(object):
     """ Represents a human player
     """
 
-    def __init__(self, number, name=None):
+    def __init__(self, number, time_limit=-1, name=None):
         self.player_type = 'human'
+        self.time_limit = time_limit
         if number != Board.X and number != Board.O:
             raise Exception("Tried to initialize player with invalid player symbol.")
         self.number = number
@@ -14,6 +15,7 @@ class Player(object):
             self.name = name
         else:
             self.name = "Player %s" % number
+
 
     def is_bot(self):
         return False

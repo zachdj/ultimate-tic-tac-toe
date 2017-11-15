@@ -1,5 +1,6 @@
 from .SceneBase import SceneBase
 from .PlayGame import PlayGame
+from .SetupGame import SetupGame
 from models.game import Player, BogoBot, Board, MonteCarloBot
 from services import ImageService
 from widgets import Button
@@ -14,6 +15,10 @@ class MainMenu(SceneBase):
         center_x = s_width*0.5
         center_y = s_height*0.5
 
+        def go_to_game_setup():
+            setup_scene = SetupGame()
+            self.switch_to_scene(setup_scene)
+
         def go_to_singleplayer():
             p1 = Player(Board.X)
             p2 = MonteCarloBot(Board.O, 5)
@@ -27,7 +32,7 @@ class MainMenu(SceneBase):
             self.switch_to_scene(game_scene)
 
         single_player_btn = Button(center_x - s_width*0.2, center_y - s_height*0.4, s_width*0.4, s_height*0.1,
-                                   "Single Player Game", go_to_singleplayer)
+                                   "Start a Game", go_to_game_setup)
 
         two_player_btn = Button(center_x - s_width * 0.2, center_y - s_height * 0.2, s_width * 0.4, s_height * 0.1,
                                    "Two Player Game", go_to_multiplayer)
