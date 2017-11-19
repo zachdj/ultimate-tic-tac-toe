@@ -1,9 +1,8 @@
 from .SceneBase import SceneBase
-from .PlayGame import PlayGame
 from widgets import Picker, Button
 from models.game import Board, Player
 from models.game.bots import BotLoader
-from services import ImageService, FontService, SettingsService as Settings
+from services import ImageService, FontService, SceneManager, SettingsService as Settings
 
 
 class SetupGame(SceneBase):
@@ -133,8 +132,7 @@ class SetupGame(SceneBase):
         def start_game():
             p1 = self.player1_type(Board.X, self.player1_time_limit)
             p2 = self.player2_type(Board.O, self.player2_time_limit)
-            game_scene = PlayGame(p1, p2)
-            self.switch_to_scene(game_scene)
+            SceneManager.go_to_play_game(self, p1, p2)
 
         start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 750,
                                    self.PICKER_WIDTH, self.PICKER_HEIGHT, "Start Game", start_game)

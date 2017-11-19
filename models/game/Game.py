@@ -73,7 +73,6 @@ class Game(object):
         :return: the selected Move
         """
         next_move = self.active_player.compute_next_move(self.board, self.get_valid_moves())
-        print(next_move)
         self.make_move(next_move)
         return next_move
 

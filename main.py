@@ -1,6 +1,5 @@
 import pygame
-from scenes import *
-from services import ApplicationStatusService as Status
+from services import SceneManager, ApplicationStatusService as Status
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -10,7 +9,7 @@ LOGICAL_HEIGHT = 1080
 display = pygame.Surface((LOGICAL_WIDTH, LOGICAL_HEIGHT))  # we will draw on this surface then transform it to screen coordinates
 clock = pygame.time.Clock()
 
-active_scene = MainMenu(screen)
+active_scene = SceneManager.get_main_menu_instance()
 
 while active_scene != None:
     pressed_keys = pygame.key.get_pressed()

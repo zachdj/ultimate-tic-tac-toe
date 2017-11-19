@@ -2,7 +2,7 @@ import pygame, numpy, threading, timeit
 from .SceneBase import SceneBase
 from .DrawingUtils import *
 from models.game import Game, Board, Move
-from services import ImageService, FontService, SettingsService as Settings
+from services import ImageService, FontService, SceneManager, SettingsService as Settings
 
 
 class PlayGame(SceneBase):
@@ -101,8 +101,7 @@ class PlayGame(SceneBase):
 
     def update(self):
         if self.game.is_game_over():
-            self.switch_to_scene(None)
-            print("Game over!  \nCongratulations Player %s" % self.game.get_winner())
+            SceneManager.go_to_game_completed(self, self.game)
 
         self.game_lock.acquire()
         bots_turn = self.game.active_player.is_bot()

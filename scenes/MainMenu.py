@@ -1,24 +1,20 @@
 from .SceneBase import SceneBase
-from .PlayGame import PlayGame
-from .SetupGame import SetupGame
-from models.game import Player, BogoBot, Board, MonteCarloBot
-from services import ImageService
+from services import ImageService, SceneManager
 from widgets import Button
 
 
 class MainMenu(SceneBase):
-    def __init__(self, screen):
+    def __init__(self):
         SceneBase.__init__(self)
         # get screen dimensions to position buttons
-        s_width = screen.get_width()
-        s_height = screen.get_height()
+        s_width = 1920
+        s_height = 1080
         center_x = s_width*0.5
         center_y = s_height*0.5
         btn_size = s_height*0.2
 
         def go_to_game_setup():
-            setup_scene = SetupGame()
-            self.switch_to_scene(setup_scene)
+            SceneManager.go_to_setup_game(self)
 
         single_player_btn = Button(center_x - s_width*0.2, center_y - 1.5*btn_size, s_width*0.4, s_height*0.1,
                                    "Start a Game", go_to_game_setup)
