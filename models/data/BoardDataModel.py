@@ -21,15 +21,14 @@ low-level board tuples used by the database
 
 
 class BoardDataModel(object):
-    def __init__(self, global_board, next_player):
+    def __init__(self, global_board):
         """
         Initializes a BoardDataModel
         :param global_board: the models.game.GlobalBoard to represent
-        :param next_player: the player who would play next on the board (Board.X or Board.O)
         :param game_id: the id of the parent GameDataModel stored in this DB
         """
-        self.next_player = next_player
         self.representation = []
+        x_count, o_count = 0, 0
         for i in list(range(0, 9)):
             metarow = i//3
             row = i % 3
@@ -37,11 +36,19 @@ class BoardDataModel(object):
                 metacol = j//3
                 col = j % 3
                 cell = global_board.board[metarow][metacol].check_cell(row, col)
-                if cell == Board.X: self.representation.append(1)
-                elif cell == Board.O: self.representation.append(2)
+                if cell == Board.X:
+                    self.representation.append(1)
+                    x_count += 1
+                elif cell == Board.O:
+                    self.representation.append(2)
+                    o_count += 1
                 else: self.representation.append(0)
 
-        # self.primary_key = "".join(map(str, self.representation)) + "np%s" % self.next_player
+        if x_count > o_count:
+            self.next_player = Board.O
+        else:
+            self.next_player = Board.X
+
         self.string_representation = ",".join(map(str, self.representation))
 
         self.processed_representation = None  # TODO
