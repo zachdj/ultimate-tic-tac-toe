@@ -16,11 +16,14 @@ class MainMenu(SceneBase):
         def go_to_game_setup():
             SceneManager.go_to_setup_game(self)
 
+        def go_to_experiment_setup():
+            SceneManager.go_to_setup_experiment(self)
+
         single_player_btn = Button(center_x - s_width*0.2, center_y - 1.5*btn_size, s_width*0.4, s_height*0.1,
                                    "Start a Game", go_to_game_setup)
 
         experiment_btn = Button(center_x - s_width * 0.2, center_y - 0.5*btn_size, s_width * 0.4, s_height * 0.1,
-                                "Run Experiment", lambda: print("Experiment time!"))
+                                "Run Experiment", go_to_experiment_setup)
 
         settings_btn = Button(center_x - s_width * 0.2, center_y + .5*btn_size, s_width * 0.4, s_height * 0.1,
                                 "Settings", lambda: print("Change some settings!"))
