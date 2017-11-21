@@ -123,9 +123,9 @@ class PlayGame(SceneBase):
         screen.blit(bg, (0, 0))
 
         # render the info box for player1
-        border_color = Settings.theme['primary'] if self.game.active_player.number == Board.X else Settings.theme['tertiary']
+        border_color = Settings.theme['primary'] if self.game.active_player.number == Board.X else Settings.theme['widget_highlight']
         # draw box
-        aa_border_rounded_rect(screen, self.P1_BOX, Settings.theme['tertiary'], border_color)
+        aa_border_rounded_rect(screen, self.P1_BOX, Settings.theme['widget_background'], border_color)
         screen.blit(self.p1_name_surface, self.p1_name_location)  # player name
         # render the timestep for player 1
         timestamp = FontService.get_regular_font(self.FONT_SIZE)
@@ -143,9 +143,9 @@ class PlayGame(SceneBase):
             screen.blit(p1_time, p1_time_location)
 
         # render the info box for player2
-        border_color = Settings.theme['secondary'] if self.game.active_player.number == Board.O else Settings.theme['tertiary']
+        border_color = Settings.theme['secondary'] if self.game.active_player.number == Board.O else Settings.theme['widget_highlight']
         # draw box
-        aa_border_rounded_rect(screen, self.P2_BOX, Settings.theme['tertiary'], border_color)
+        aa_border_rounded_rect(screen, self.P2_BOX, Settings.theme['widget_background'], border_color)
         screen.blit(self.p2_name_surface, self.p2_name_location) # player 2's name
         # render the timestep for player 2
         if self.game.active_player.number == Board.O:

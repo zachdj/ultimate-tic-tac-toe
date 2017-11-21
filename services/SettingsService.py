@@ -9,7 +9,9 @@ default_theme = {
     "name": "Default",
     "primary": (117, 64, 160),
     "secondary": (61, 189, 73),
-    "tertiary": (63, 63, 63),
+    "tertiary": (150, 150, 150),
+    "widget_background": (63, 63, 63),
+    "widget_highlight": (100, 100, 100),
     "font": (200, 220, 220)
 }
 

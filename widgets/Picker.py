@@ -1,5 +1,6 @@
 import pygame
 from .WidgetBase import WidgetBase
+from scenes.DrawingUtils import aa_border_rounded_rect
 from services import SettingsService as Settings
 from services import ImageService
 from services import FontService
@@ -81,8 +82,8 @@ class Picker(WidgetBase):
     def render(self, surface):
         # draw the textbox with the current label:
         textbox_rect = pygame.Rect(self.left + int(1.5*self.BTN_WIDTH), self.top, self.TEXTBOX_WIDTH, self.HEIGHT)
-        pygame.draw.rect(surface, Settings.default_theme['tertiary'], textbox_rect)  # bg of box
-        pygame.draw.rect(surface, Settings.default_theme['secondary'], textbox_rect, self.BORDER_WEIGHT)  # border
+        aa_border_rounded_rect(surface, textbox_rect, Settings.default_theme['widget_background'],
+                               Settings.default_theme['widget_highlight'], 0.4, self.BORDER_WEIGHT)
 
         surface.blit(self.left_btn, (self.left, self.top))
         surface.blit(self.right_btn, (self.left + self.WIDTH - self.BTN_WIDTH, self.top))

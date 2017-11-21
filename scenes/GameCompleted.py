@@ -89,16 +89,13 @@ class GameCompleted(SceneBase):
         elif self.game.get_winner() == Board.O:
             border_color = Settings.theme['secondary']
         else:
-            border_color = Settings.theme['tertiary']
+            border_color = Settings.theme['widget_highlight']
 
         # draw box
-        aa_border_rounded_rect(screen, self.WINNER_BOX, Settings.theme['tertiary'], border_color)
+        aa_border_rounded_rect(screen, self.WINNER_BOX, Settings.theme['widget_background'], border_color)
         screen.blit(self.winner_text_surface, self.winner_text_location)  # name of winner
 
         # render the board
-        #TODO: we should probably export this logic to a single location so we don't have to double-maintain GameCompleted and PlayGame
-        valid_moves = self.game.get_valid_moves()
-        current_player = self.game.active_player
         current_player_symbol = self.game.active_player.number
         for i in list(range(0, 9)):
             metarow = i // 3
@@ -119,11 +116,6 @@ class GameCompleted(SceneBase):
                     screen.blit(self.cell_sprites['p1_won'], (location_x, location_y))
                 elif board_winner == Board.O:
                     screen.blit(self.cell_sprites['p2_won'], (location_x, location_y))
-                elif move_object in valid_moves:
-                    if current_player.number == Board.X:
-                        screen.blit(self.cell_sprites['p1_highlight'], (location_x, location_y))
-                    if current_player.number == Board.O:
-                        screen.blit(self.cell_sprites['p2_highlight'], (location_x, location_y))
                 else:
                     screen.blit(self.cell_sprites['blank'], (location_x, location_y))
 

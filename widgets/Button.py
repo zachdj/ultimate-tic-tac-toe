@@ -49,12 +49,12 @@ class Button(WidgetBase):
                 self.depressed = False
 
     def render(self, surface):
-        border_color = Settings.theme['tertiary']
-        if self.hover: border_color = Settings.theme['primary']
-        if self.depressed: border_color = Settings.theme['secondary']
+        border_color = Settings.theme['widget_highlight']
+        if self.hover: border_color = Settings.theme['tertiary']
+        if self.depressed: border_color = Settings.theme['widget_background']
 
         DrawingUtils.aa_border_rounded_rect(surface, pygame.Rect(self.left, self.top, self.width, self.height),
-                                            Settings.theme['tertiary'], border_color)
+                                            Settings.theme['widget_background'], border_color)
 
         font = FontService.get_regular_font(round(self.height * 0.40))
         font_color = Settings.theme['font']
