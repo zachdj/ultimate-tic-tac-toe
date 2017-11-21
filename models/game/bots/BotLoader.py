@@ -1,5 +1,6 @@
 from .BogoBot import BogoBot
 from .MonteCarloBot import MonteCarloBot
+from .MinimaxBot import MinimaxBot
 
 """
 The BotLoader module loads a list of all bots with a human-readable name, description, and difficulty (0-10)
@@ -19,7 +20,13 @@ bots = [
         "description": "Uses the Monte Carlo Search Tree algorithm to play..",
         "difficulty": 2,
         "data": MonteCarloBot
-     }
+     },
+    {
+        "title": "Base Minimax Bot",
+        "description": "Minimax with alpha-beta pruning but a crappy heuristic function.  Don't use this",
+        "difficulty": 2,
+        "data": MinimaxBot
+    }
 ]
 
 
