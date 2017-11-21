@@ -2,8 +2,8 @@
 Temporary module for running human tests
 """
 from models.game import *
-from models.data import DatabaseConnection as DB, GameDataModel
-import timeit
+from models.data import DatabaseConnection as DB, GameDataModel, BoardDataModel
+import timeit, random
 
 
 def full_game_experiment(total_games, purge=10):
@@ -146,7 +146,3 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 
     DB.close()
 
-
-# full_game_experiment(total_games=3000)
-# mid_game_experiment(starting_boards=300, games_per_board=300)
-late_game_experiment(starting_boards=225, games_per_board=300)

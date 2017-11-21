@@ -18,7 +18,7 @@ class MinimaxBot(Bot):
         """
 
         :param number:  Board.X for player1 or Board.O for player2
-        :param name: the name of the
+        :param name: A descriptive name for the Bot
         """
         if name is None:
             name = "Minimax Bot"
@@ -71,6 +71,12 @@ class MinimaxBot(Bot):
                 return 1, None
             else:
                 return -1, None
+        elif max_depth == 0:
+            # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
+            if self.number == Board.X:
+                return self.compute_score(board), None
+            else:
+                return -self.compute_score(board), None
 
         a, b = alpha, beta
 
@@ -92,13 +98,20 @@ class MinimaxBot(Bot):
         return value, best_move
 
     def _min(self, board, valid_moves, alpha, beta, max_depth):
-        if board.board_completed or max_depth == 0:  # termination test
+        # test for stopping condition
+        if board.board_completed:
             if board.winner == Board.EMPTY:
                 return 0, None
             elif board.winner == self.number:
                 return 1, None
             else:
                 return -1, None
+        elif max_depth == 0:
+            # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
+            if self.number == Board.X:
+                return self.compute_score(board), None
+            else:
+                return -self.compute_score(board), None
 
         a, b = alpha, beta
 

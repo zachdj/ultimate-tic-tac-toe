@@ -30,17 +30,16 @@ class BoardDataModel(object):
         """
         self.next_player = next_player
         self.representation = []
-        range = [0, 1, 2]
-        for metarow in range:
-            for metacol in range:
-                for row in range:
-                    for col in range:
-                        if global_board.board[metarow][metacol].check_cell(row, col) == Board.X:
-                            self.representation.append(1)
-                        elif global_board.board[metarow][metacol].check_cell(row, col) == Board.O:
-                            self.representation.append(2)
-                        else:
-                            self.representation.append(0)
+        for i in list(range(0, 9)):
+            metarow = i//3
+            row = i % 3
+            for j in list(range(0, 9)):
+                metacol = j//3
+                col = j % 3
+                cell = global_board.board[metarow][metacol].check_cell(row, col)
+                if cell == Board.X: self.representation.append(1)
+                elif cell == Board.O: self.representation.append(2)
+                else: self.representation.append(0)
 
         # self.primary_key = "".join(map(str, self.representation)) + "np%s" % self.next_player
         self.string_representation = ",".join(map(str, self.representation))
