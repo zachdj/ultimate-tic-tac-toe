@@ -74,7 +74,8 @@ class RunExperiment(SceneBase):
         for widget in self.widgets:
             widget.process_input(events, pressed_keys)
 
-        self.done_btn.process_input(events, pressed_keys)
+        if self.experiment.finished:
+            self.done_btn.process_input(events, pressed_keys)
 
     def update(self):
         pass
@@ -140,4 +141,5 @@ class RunExperiment(SceneBase):
         for widget in self.widgets:
             widget.render(screen)
 
-        self.done_btn.render(screen)
+        if self.experiment.finished:
+            self.done_btn.render(screen)

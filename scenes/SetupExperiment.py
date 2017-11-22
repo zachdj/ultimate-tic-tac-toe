@@ -153,7 +153,6 @@ class SetupExperiment(SceneBase):
         self.player2_type = bots[0]['data']
         self.player2_time_limit = bot_time_limit_options[0]['data']
         self.num_games = num_games_options[18]['data']
-        print(self.num_games)
         self.record_result = record_result_options[0]['data']
 
         # button to start the experiment
