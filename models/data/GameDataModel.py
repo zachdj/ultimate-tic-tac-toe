@@ -33,7 +33,6 @@ class GameDataModel(object):
         board = GlobalBoard()
         for move in self.game.moves:
             board.make_move(move)
-            board.make_move(move)
             board_data = BoardDataModel(board)
 
             if self.game.get_winner() == Board.X:

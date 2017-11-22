@@ -1,7 +1,7 @@
 import numpy
 from .SceneBase import SceneBase
 from widgets import Picker, Button
-from models.game import Board
+from models.game import Board, Experiment
 from models.game.bots import BotLoader
 from services import ImageService, FontService, SceneManager, SettingsService as Settings
 
@@ -130,7 +130,7 @@ class SetupExperiment(SceneBase):
 
         num_games_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 660, self.PICKER_WIDTH,
                                      self.PICKER_HEIGHT, num_games_options, num_games_callback,
-                                     wrap_values=True, selected_index=0)
+                                     wrap_values=True, selected_index=18)
         self.widgets.append(num_games_picker)
 
         # binary picker whether to record the result of the experiment or not
@@ -152,14 +152,16 @@ class SetupExperiment(SceneBase):
         self.player1_time_limit = bot_time_limit_options[0]['data']
         self.player2_type = bots[0]['data']
         self.player2_time_limit = bot_time_limit_options[0]['data']
-        self.num_games = num_games_options[0]['data']
+        self.num_games = num_games_options[18]['data']
+        print(self.num_games)
         self.record_result = record_result_options[0]['data']
 
         # button to start the experiment
         def start_experiment():
             p1 = self.player1_type(Board.X, self.player1_time_limit)
             p2 = self.player2_type(Board.O, self.player2_time_limit)
-            # SceneManager.go_to_experiment(self, p1, p2)
+            experiment = Experiment(p1, p2, self.num_games, self.record_result)
+            SceneManager.go_to_experiment(self, experiment)
 
         start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 850,
                                    self.PICKER_WIDTH, self.PICKER_HEIGHT, "Start Experiment", start_experiment)

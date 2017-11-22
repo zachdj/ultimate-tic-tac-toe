@@ -146,3 +146,7 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 
     DB.close()
 
+
+full_game_experiment(300)
+# mid_game_experiment(75, 100)
+# late_game_experiment(75, 100)

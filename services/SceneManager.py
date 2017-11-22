@@ -3,6 +3,7 @@ from scenes.SetupGame import SetupGame
 from scenes.PlayGame import PlayGame
 from scenes.GameCompleted import GameCompleted
 from scenes.SetupExperiment import SetupExperiment
+from scenes.RunExperiment import RunExperiment
 
 """
 This module provides convenience functions for switching to scenes.  This solves problems with scene circular dependence
@@ -28,6 +29,10 @@ def go_to_game_completed(current_scene, game):
 
 def go_to_setup_experiment(current_scene):
     current_scene.switch_to_scene(SetupExperiment())
+
+
+def go_to_experiment(current_scene, experiment):
+    current_scene.switch_to_scene(RunExperiment(experiment))
 
 
 # dirty hack that I'm very ashamed of to make menu scene work from initial bootstrap in main.py

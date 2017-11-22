@@ -99,6 +99,8 @@ def close():
         _connection.close()
         _connection_open = False
 
+    _connection = None
+
 
 def purge_boards(min_games):
     # removes board states from the database where fewer than min_games have been played

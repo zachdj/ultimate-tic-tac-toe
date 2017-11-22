@@ -19,6 +19,7 @@ class Experiment(object):
         self.p2 = player2
         self.iterations = iterations
         self.record_result = record
+        self.finished = False
 
     def run(self, callback):
         """ Runs the current experiment.  The callback function will be called after each game is finished.
@@ -34,3 +35,5 @@ class Experiment(object):
                 game_dm.save()
 
             callback(i+1, game.get_winner())
+
+        self.finished = True
