@@ -80,7 +80,7 @@ def query(sql):
     return cursor.execute(sql)
 
 
-def execute(sql):
+def execute(sqlscript):
     """ Executes the given sql statement """
     global _connection, _connection_open
     if not (_connection and _connection_open):
@@ -88,7 +88,7 @@ def execute(sql):
         init()
 
     cursor = _connection.cursor()
-    cursor.execute(sql)
+    cursor.executescript(sqlscript)
     _connection.commit()
 
 

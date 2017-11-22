@@ -50,70 +50,61 @@ class BoardDataModel(object):
             self.next_player = Board.X
 
         self.string_representation = ",".join(map(str, self.representation))
+        self.KEY_QUERY = "WHERE next_player = %s " % self.next_player
+        for row in list(range(0, 9)):
+            for col in list(range(0, 9)):
+                flattened_index = row * 9 + col
+                attr_query = "AND p%s%s = %s " % (row, col, self.representation[flattened_index])
+                self.KEY_QUERY += attr_query
+        self.INSERT_SCRIPT = "INSERT OR IGNORE INTO board VALUES (%s, %s, 0, 0, 0); " % (self.string_representation, self.next_player)
+        self.ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 %s ; " % self.KEY_QUERY
+        self.ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 %s ; " % self.KEY_QUERY
+        self.ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 %s ; " % self.KEY_QUERY
 
         self.processed_representation = None  # TODO
+
+    def get_insert_script(self, type='win'):
+        script = "INSERT OR IGNORE INTO board VALUES (%s, %s, 0, 0, 0); " % (self.string_representation, self.next_player)
+        if type == 'win':
+            script += self.ADD_WIN_SCRIPT
+        elif type == 'loss':
+            script += self.ADD_LOSS_SCRIPT
+        else:
+            script += self.ADD_TIE_SCRIPT
+
+        return script
 
     def _insert_model(self):
         """
         private function to insert this board into the database.  Win, loss, and tie counts are initialized to 0
-        This should only be called if the board doesn't already exist in the database
+        This statement will be ignored if the board state already exists in the database
         :return:
         """
-        insert_script = "INSERT INTO board VALUES (%s, %s, 0, 0, 0)" % (self.string_representation, self.next_player)
-        DB.execute(insert_script)
-
-    def _check_for_model(self):
-        """
-        private function to check if an instance of this board exists in the database
-        :return: True if a board with this configuration already exists in the database.  False otherwise
-        """
-        cursor = DB.query("SELECT * FROM board %s ;" % self.assemble_key_query())
-        return cursor.fetchone() is not None
+        DB.execute(self.INSERT_SCRIPT)
 
     def add_win(self):
         """
         Tallies up a win for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
+        self._insert_model()
 
-        ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 %s ;" % self.assemble_key_query()
-        DB.execute(ADD_WIN_SCRIPT)
+        DB.execute(self.ADD_WIN_SCRIPT)
 
     def add_loss(self):
         """
         Tallies up a loss for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
+        self._insert_model()
 
-        ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 %s ;" % self.assemble_key_query()
-        DB.execute(ADD_LOSS_SCRIPT)
+        DB.execute(self.ADD_LOSS_SCRIPT)
 
     def add_tie(self):
         """
         Tallies up a tie for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
-
-        ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 %s ;" % self.assemble_key_query()
-        DB.execute(ADD_TIE_SCRIPT)
-
-    def assemble_key_query(self):
-        """
-        Creates the WHERE statement that asks for the board with a matching representation
-        :return: a String "WHERE p00 = <value> AND p01 = <value> ... AND next_player = <value>"
-        """
-        query = "WHERE next_player = %s " % self.next_player
-        for row in list(range(0, 9)):
-            for col in list(range(0, 9)):
-                flattened_index = row * 9 + col
-                attr_query = "AND p%s%s = %s " % (row, col, self.representation[flattened_index])
-                query += attr_query
-
-        return query
+        self._insert_model()
+        DB.execute(self.ADD_TIE_SCRIPT)
 

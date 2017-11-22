@@ -146,7 +146,12 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 
     DB.close()
 
+p1 = BogoBot(Board.X, 5)
+p2 = BogoBot(Board.O, 5)
+experiment = Experiment(p1, p2, 100, True)
+experiment.run(callback=lambda x,y: print(x))
 
-full_game_experiment(300)
-# mid_game_experiment(75, 100)
+
+# full_game_experiment(10)
+# mid_game_experiment(1, 15)
 # late_game_experiment(75, 100)

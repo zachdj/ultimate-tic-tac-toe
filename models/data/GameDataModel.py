@@ -18,9 +18,28 @@ class GameDataModel(object):
             raise Exception("You cannot record the result of a game which has not been completed")
         self.game = game
 
+    def get_save_script(self):
+        script = "INSERT INTO game VALUES ('%s', '%s', '%s', '%s'); " \
+                             % (self.game.player1.player_type, self.game.player2.player_type,
+                                datetime.date.today().strftime("%d/%m/%Y"), len(self.game.moves))
+        # add each board state
+        board = GlobalBoard()
+        for move in self.game.moves:
+            board.make_move(move)
+            board_data = BoardDataModel(board)
+
+            if self.game.get_winner() == Board.X:
+                script += board_data.get_insert_script(type='win')
+            elif self.game.get_winner() == Board.O:
+                script += board_data.get_insert_script(type='loss')
+            else:
+                script += board_data.get_insert_script(type='tie')
+
+        return script
+
     def save(self):
         # first save the game tuple
-        GAME_INSERT_SCRIPT = "INSERT INTO game VALUES ('%s', '%s', '%s', '%s')" \
+        GAME_INSERT_SCRIPT = "INSERT INTO game VALUES ('%s', '%s', '%s', '%s'); " \
                              % (self.game.player1.player_type, self.game.player2.player_type,
                                 datetime.date.today().strftime("%d/%m/%Y"), len(self.game.moves))
         DB.execute(GAME_INSERT_SCRIPT)
