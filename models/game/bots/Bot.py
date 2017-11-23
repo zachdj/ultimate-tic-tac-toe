@@ -3,9 +3,15 @@ from ..Player import Player
 
 class Bot(Player):
     """ Abstract base class for UTTT Bots (non-human players)
-    """
 
+    Child classes should define an init function that takes the player number and a time_limit
+    """
     def __init__(self, number, name=None):
+        """
+
+        :param number:  Board.X for player1 or Board.O for player2
+        :param name: the name of the
+        """
         Player.__init__(self, number, name)
         self.player_type = 'generic bot'
 

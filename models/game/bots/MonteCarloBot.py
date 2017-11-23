@@ -1,24 +1,33 @@
 import random, numpy, timeit
-from .Bot import Bot
+from .TimeLimitedBot import TimeLimitedBot
 from ..Board import Board
+from services import ApplicationStatusService
 
 # TODO: Save MCTS tree and reuse nodes as moves are chosen
+# TODO: Fixe node scoring function
+
+"""
+    Some ideas on this implementation:
+    (Written at 3:04 am on a Wednesday so take these with a grain or two of salt)
+    The bot is currently setup to minimize the chances of player 2s success.  This may be causing it to be content with ties
+    Also, the bot assumes the other player is completely random.  This seems to give the bot a predilection towards choosing moves with a high branching factor
+"""
 
 
-class MonteCarloBot(Bot):
+class MonteCarloBot(TimeLimitedBot):
     """
     This bot performs a Monte Carlo Tree Search to find a move
     """
-    def __init__(self, player, time_limit):
+    def __init__(self, player, time_limit=10):
         """
-        Creates a new Monte Carlo Bot
+        Creates a new Monte Carlo Tree Search Bot
         :param player: the player that this bot will play as.  Either Board.X or Board.O
         :param time_limit: The maximum computation time, in seconds
         """
-        Bot.__init__(self, player, "Monte Carlo Bot")
-        self.player_type = 'mc bot'
-        self.game = None  # we'll set this in the setup function
+        TimeLimitedBot.__init__(self, player, time_limit, "MCTS Bot")
         self.time_limit = time_limit
+        self.player_type = 'mcts bot'
+        self.game = None  # we'll set this in the setup function
 
         random.seed()
 
@@ -31,7 +40,7 @@ class MonteCarloBot(Bot):
         if len(self.game.moves) > 0:
             last_move = self.game.moves[-1]
         root_node = _Node(self.game.board, last_move)
-        while (timeit.default_timer() - begin) < self.time_limit:
+        while (timeit.default_timer() - begin) < self.time_limit and not ApplicationStatusService.terminated:
             selected_node = root_node.select_node()
             expanded_node = selected_node.expand_node()
             expanded_node.do_playout()
@@ -146,6 +155,7 @@ class _Node(object):
             valid_moves = board.get_valid_moves(last_move)
             selected_move = random.choice(valid_moves)
             board.make_move(selected_move)
+            last_move = selected_move
 
         winner = board.winner
         self.backpropogate(winner)

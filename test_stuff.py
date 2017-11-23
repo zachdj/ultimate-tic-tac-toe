@@ -2,8 +2,8 @@
 Temporary module for running human tests
 """
 from models.game import *
-from models.data import DatabaseConnection as DB, GameDataModel
-import timeit
+from models.data import DatabaseConnection as DB, GameDataModel, BoardDataModel
+import timeit, random
 
 
 def full_game_experiment(total_games, purge=10):
@@ -146,19 +146,12 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 
     DB.close()
 
+p1 = BogoBot(Board.X, 5)
+p2 = BogoBot(Board.O, 5)
+experiment = Experiment(p1, p2, 100, True)
+experiment.run(callback=lambda x,y: print(x))
 
-# full_game_experiment(total_games=3000)
-# mid_game_experiment(starting_boards=300, games_per_board=100)
-# late_game_experiment(starting_boards=300, games_per_board=100)
 
-p1 = BogoBot(Board.X)
-p2 = MonteCarloBot(Board.O, 2)
-game = Game(p1, p2)
-game.finish_game()
-print(game.get_winner())
-# print(game.board)
-# first_move = p1.compute_next_move(game.board, game.get_valid_moves())
-# game.make_move(first_move)
-
-# second_move = p2.compute_next_move(game.board, game.get_valid_moves())
-# print(second_move)
+# full_game_experiment(10)
+# mid_game_experiment(1, 15)
+# late_game_experiment(75, 100)

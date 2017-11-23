@@ -21,78 +21,90 @@ low-level board tuples used by the database
 
 
 class BoardDataModel(object):
-    def __init__(self, global_board, next_player):
+    def __init__(self, global_board):
         """
         Initializes a BoardDataModel
         :param global_board: the models.game.GlobalBoard to represent
-        :param next_player: the player who would play next on the board (Board.X or Board.O)
         :param game_id: the id of the parent GameDataModel stored in this DB
         """
-        self.next_player = next_player
         self.representation = []
-        range = [0, 1, 2]
-        for metarow in range:
-            for metacol in range:
-                for row in range:
-                    for col in range:
-                        if global_board.board[metarow][metacol].check_cell(row, col) == Board.X:
-                            self.representation.append(1)
-                        elif global_board.board[metarow][metacol].check_cell(row, col) == Board.O:
-                            self.representation.append(2)
-                        else:
-                            self.representation.append(0)
+        x_count, o_count = 0, 0
+        for i in list(range(0, 9)):
+            metarow = i//3
+            row = i % 3
+            for j in list(range(0, 9)):
+                metacol = j//3
+                col = j % 3
+                cell = global_board.board[metarow][metacol].check_cell(row, col)
+                if cell == Board.X:
+                    self.representation.append(1)
+                    x_count += 1
+                elif cell == Board.O:
+                    self.representation.append(2)
+                    o_count += 1
+                else: self.representation.append(0)
 
-        self.primary_key = "".join(map(str, self.representation)) + "np%s" % self.next_player
+        if x_count > o_count:
+            self.next_player = Board.O
+        else:
+            self.next_player = Board.X
+
         self.string_representation = ",".join(map(str, self.representation))
+        self.KEY_QUERY = "WHERE next_player = %s " % self.next_player
+        for row in list(range(0, 9)):
+            for col in list(range(0, 9)):
+                flattened_index = row * 9 + col
+                attr_query = "AND p%s%s = %s " % (row, col, self.representation[flattened_index])
+                self.KEY_QUERY += attr_query
+        self.INSERT_SCRIPT = "INSERT OR IGNORE INTO board VALUES (%s, %s, 0, 0, 0); " % (self.string_representation, self.next_player)
+        self.ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 %s ; " % self.KEY_QUERY
+        self.ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 %s ; " % self.KEY_QUERY
+        self.ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 %s ; " % self.KEY_QUERY
 
         self.processed_representation = None  # TODO
+
+    def get_insert_script(self, type='win'):
+        script = "INSERT OR IGNORE INTO board VALUES (%s, %s, 0, 0, 0); " % (self.string_representation, self.next_player)
+        if type == 'win':
+            script += self.ADD_WIN_SCRIPT
+        elif type == 'loss':
+            script += self.ADD_LOSS_SCRIPT
+        else:
+            script += self.ADD_TIE_SCRIPT
+
+        return script
 
     def _insert_model(self):
         """
         private function to insert this board into the database.  Win, loss, and tie counts are initialized to 0
-        This should only be called if the board doesn't already exist in the database
+        This statement will be ignored if the board state already exists in the database
         :return:
         """
-        insert_script = "INSERT INTO board VALUES ('%s', %s, %s, 0, 0, 0)" % (self.primary_key, self.string_representation, self.next_player)
-        DB.execute(insert_script)
-
-    def _check_for_model(self):
-        """
-        private function to check if an instance of this board exists in the database
-        :return: True if a board with this configuration already exists in the database.  False otherwise
-        """
-        cursor = DB.query("SELECT * FROM board WHERE id = '%s' ;" % self.primary_key)
-        return cursor.fetchone() is not None
+        DB.execute(self.INSERT_SCRIPT)
 
     def add_win(self):
         """
         Tallies up a win for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
+        self._insert_model()
 
-        ADD_WIN_SCRIPT = "UPDATE board SET wins = wins + 1 WHERE id = '%s' ;" % self.primary_key
-        DB.execute(ADD_WIN_SCRIPT)
+        DB.execute(self.ADD_WIN_SCRIPT)
 
     def add_loss(self):
         """
         Tallies up a loss for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
+        self._insert_model()
 
-        ADD_LOSS_SCRIPT = "UPDATE board SET losses = losses + 1 WHERE id = '%s' ;" % self.primary_key
-        DB.execute(ADD_LOSS_SCRIPT)
+        DB.execute(self.ADD_LOSS_SCRIPT)
 
     def add_tie(self):
         """
         Tallies up a tie for this board state in the current database
         :return: None
         """
-        if not self._check_for_model():
-            self._insert_model()
+        self._insert_model()
+        DB.execute(self.ADD_TIE_SCRIPT)
 
-        ADD_TIE_SCRIPT = "UPDATE board SET ties = ties + 1 WHERE id = '%s' ;" % self.primary_key
-        DB.execute(ADD_TIE_SCRIPT)

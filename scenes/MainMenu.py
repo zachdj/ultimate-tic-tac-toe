@@ -1,44 +1,34 @@
 from .SceneBase import SceneBase
-from .PlayGame import PlayGame
-from models.game import Player, BogoBot, Board, MonteCarloBot
-from services import ImageService
+from services import ImageService, SceneManager
 from widgets import Button
 
 
 class MainMenu(SceneBase):
-    def __init__(self, screen):
+    def __init__(self):
         SceneBase.__init__(self)
         # get screen dimensions to position buttons
-        s_width = screen.get_width()
-        s_height = screen.get_height()
+        s_width = 1920
+        s_height = 1080
         center_x = s_width*0.5
         center_y = s_height*0.5
+        btn_size = s_height*0.2
 
-        def go_to_singleplayer():
-            p1 = Player(Board.X)
-            p2 = MonteCarloBot(Board.O, 5)
-            game_scene = PlayGame(p1, p2)
-            self.switch_to_scene(game_scene)
+        def go_to_game_setup():
+            SceneManager.go_to_setup_game(self)
 
-        def go_to_multiplayer():
-            p1 = Player(Board.X)
-            p2 = Player(Board.O)
-            game_scene = PlayGame(p1, p2)
-            self.switch_to_scene(game_scene)
+        def go_to_experiment_setup():
+            SceneManager.go_to_setup_experiment(self)
 
-        single_player_btn = Button(center_x - s_width*0.2, center_y - s_height*0.4, s_width*0.4, s_height*0.1,
-                                   "Single Player Game", go_to_singleplayer)
+        single_player_btn = Button(center_x - s_width*0.2, center_y - 1.5*btn_size, s_width*0.4, s_height*0.1,
+                                   "Start a Game", go_to_game_setup)
 
-        two_player_btn = Button(center_x - s_width * 0.2, center_y - s_height * 0.2, s_width * 0.4, s_height * 0.1,
-                                   "Two Player Game", go_to_multiplayer)
+        experiment_btn = Button(center_x - s_width * 0.2, center_y - 0.5*btn_size, s_width * 0.4, s_height * 0.1,
+                                "Run Experiment", go_to_experiment_setup)
 
-        experiment_btn = Button(center_x - s_width * 0.2, center_y, s_width * 0.4, s_height * 0.1,
-                                "Run Experiment", lambda: print("Experiment time!"))
-
-        settings_btn = Button(center_x - s_width * 0.2, center_y + s_height * 0.2, s_width * 0.4, s_height * 0.1,
+        settings_btn = Button(center_x - s_width * 0.2, center_y + .5*btn_size, s_width * 0.4, s_height * 0.1,
                                 "Settings", lambda: print("Change some settings!"))
 
-        self.widgets.extend([single_player_btn, two_player_btn, experiment_btn, settings_btn])
+        self.widgets.extend([single_player_btn, experiment_btn, settings_btn])
 
     def process_input(self, events, pressed_keys):
         for widget in self.widgets:

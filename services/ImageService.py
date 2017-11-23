@@ -36,11 +36,11 @@ def get_game_bg():
     return get_image(build_image_path("game_bg.png"))
 
 
-def get_text_button_sprites():
-    normal = build_image_path("dark_btn.png")
-    hover = build_image_path("dark_btn_hover.png")
-    pressed = build_image_path("dark_btn_pressed.png")
-    return get_image(normal), get_image(hover), get_image(pressed)
+def get_picker_sprites():
+    return {
+        'left_btn': get_image(build_image_path("widgets/left_btn.png")),
+        'right_btn': get_image(build_image_path("widgets/right_btn.png"))
+    }
 
 
 def get_board_cell_sprites():

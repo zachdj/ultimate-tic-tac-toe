@@ -3,6 +3,7 @@ from .Bot import Bot
 
 
 class BogoBot(Bot):
+    title = "Random Bot"
     """
     This bot moves at random
     """
