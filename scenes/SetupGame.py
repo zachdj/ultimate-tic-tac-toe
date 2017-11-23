@@ -54,10 +54,7 @@ class SetupGame(SceneBase):
         self.p2_time_label_size = self.p2_time_label.size("Move Timer")
         self.p2_time_label_location = (self.THREE_QUARTER_X - 0.5 * self.p2_time_label_size[0], 470)
 
-        # these are the selectable options for time limits
-        human_time_limit_options = [
-            {"title": "Unlimited", "data": -1}
-        ]
+        # Selectable options for time limit on bots that require a time limit
         bot_time_limit_options = [
             {"title": "0:01", "data": 1},
             {"title": "0:02", "data": 2},
@@ -76,62 +73,42 @@ class SetupGame(SceneBase):
             {"title": "Seriously? More?", "data": 600}
         ]
 
-        def p1_time_callback(value):
-            self.player1_time_limit = value['data']
-
-        def p2_time_callback(value):
-            self.player2_time_limit = value['data']
-
-        player1_time_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 550, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, human_time_limit_options, p1_time_callback,
-                                     wrap_values=False, selected_index=len(human_time_limit_options)-1)
-        player2_time_picker = Picker(self.THREE_QUARTER_X - 0.5 * self.PICKER_WIDTH, 550, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, human_time_limit_options, p2_time_callback,
-                                     wrap_values=False, selected_index=len(human_time_limit_options)-1)
-        self.widgets.append(player1_time_picker)
-        self.widgets.append(player2_time_picker)
+        self.player1_time_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 550, self.PICKER_WIDTH,
+                                     self.PICKER_HEIGHT, bot_time_limit_options, callback=None,
+                                     wrap_values=False)
+        self.player2_time_picker = Picker(self.THREE_QUARTER_X - 0.5 * self.PICKER_WIDTH, 550, self.PICKER_WIDTH,
+                                     self.PICKER_HEIGHT, bot_time_limit_options, callback=None,
+                                     wrap_values=False)
 
         # these are the choosable options for player 1 and player 2
         player_options = [{
             "title": "Human Player",
             "description": "Moves controlled by a human player using the mouse.",
             "difficulty": 5,
+            "requires_time_limit": False,
             "data": Player
         }]
         bots = BotLoader.get_bots()
         player_options.extend(bots)
 
-        def p1_picker_callback(value):
-            self.player1_type = value['data']
-            # if the player is no longer human, remove the "Unlimited" time option
-            if self.player1_type != Player:
-                player1_time_picker.set_values(bot_time_limit_options)
-            else:
-                player1_time_picker.set_values(human_time_limit_options)
-
-        def p2_picker_callback(value):
-            self.player2_type = value['data']
-            # if the player is no longer human, remove the "Unlimited" time option
-            if self.player2_type != Player:
-                player2_time_picker.set_values(bot_time_limit_options)
-            else:
-                player2_time_picker.set_values(human_time_limit_options)
-
-        player1_picker = Picker(self.QUARTER_X - 0.5*self.PICKER_WIDTH, 250, self.PICKER_WIDTH, self.PICKER_HEIGHT, player_options, p1_picker_callback)
-        player2_picker = Picker(self.THREE_QUARTER_X - 0.5*self.PICKER_WIDTH, 250, self.PICKER_WIDTH, self.PICKER_HEIGHT, player_options, p2_picker_callback)
-        self.widgets.append(player1_picker)
-        self.widgets.append(player2_picker)
-
-        # Data that will be set by page controls:
-        self.player1_type = player_options[0]['data']
-        self.player1_time_limit = human_time_limit_options[-1]['data']
-        self.player2_type = player_options[0]['data']
-        self.player2_time_limit = human_time_limit_options[-1]['data']
+        self.player1_picker = Picker(self.QUARTER_X - 0.5*self.PICKER_WIDTH, 250, self.PICKER_WIDTH, self.PICKER_HEIGHT, player_options)
+        self.player2_picker = Picker(self.THREE_QUARTER_X - 0.5*self.PICKER_WIDTH, 250, self.PICKER_WIDTH, self.PICKER_HEIGHT, player_options)
+        self.widgets.append(self.player1_picker)
+        self.widgets.append(self.player2_picker)
 
         # button to start the game
         def start_game():
-            p1 = self.player1_type(Board.X, self.player1_time_limit)
-            p2 = self.player2_type(Board.O, self.player2_time_limit)
+            p1_type = self.player1_picker.get_selected_value()['data']
+            if self.player1_picker.get_selected_value()['requires_time_limit']:
+                p1 = p1_type(Board.X, self.player1_time_picker.get_selected_value()['data'])
+            else:
+                p1 = p1_type(Board.X)
+
+            p2_type = self.player2_picker.get_selected_value()['data']
+            if self.player2_picker.get_selected_value()['requires_time_limit']:
+                p2 = p2_type(Board.O, self.player2_time_picker.get_selected_value()['data'])
+            else:
+                p2 = p2_type(Board.O)
             SceneManager.go_to_play_game(self, p1, p2)
 
         start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 750,
@@ -139,6 +116,11 @@ class SetupGame(SceneBase):
         self.widgets.append(start_game_btn)
 
     def process_input(self, events, pressed_keys):
+        if self.player1_picker.get_selected_value()['requires_time_limit']:
+            self.player1_time_picker.process_input(events, pressed_keys)
+        if self.player2_picker.get_selected_value()['requires_time_limit']:
+            self.player2_time_picker.process_input(events, pressed_keys)
+
         for widget in self.widgets:
             widget.process_input(events, pressed_keys)
 
@@ -152,8 +134,14 @@ class SetupGame(SceneBase):
         screen.blit(self.title_surface, self.title_location)
         screen.blit(self.p1_label_surface, self.p1_label_location)
         screen.blit(self.p2_label_surface, self.p2_label_location)
-        screen.blit(self.p1_time_label_surface, self.p1_time_label_location)
-        screen.blit(self.p2_time_label_surface, self.p2_time_label_location)
+
+        if self.player1_picker.get_selected_value()['requires_time_limit']:
+            screen.blit(self.p1_time_label_surface, self.p1_time_label_location)
+            self.player1_time_picker.render(screen)
+
+        if self.player2_picker.get_selected_value()['requires_time_limit']:
+            screen.blit(self.p2_time_label_surface, self.p2_time_label_location)
+            self.player2_time_picker.render(screen)
 
         for widget in self.widgets:
             widget.render(screen)

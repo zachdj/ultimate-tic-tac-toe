@@ -4,7 +4,6 @@ from services import SettingsService as Settings, FontService, ImageService, Sce
 from widgets import Button
 from scenes.SceneBase import SceneBase
 from scenes.DrawingUtils import *
-from models.game import Board
 from models.data import DatabaseConnection as DB
 
 
@@ -26,7 +25,7 @@ class RunExperiment(SceneBase):
         self.PROGRESS_BAR_WIDTH = 1920 - 2*self.MARGIN
         self.PROGRESS_BAR_HEIGHT = 100
         self.PROGRESS_BAR_X = self.MARGIN
-        self.PROGRESS_BAR_Y = self.INFO_BOX.y + self.INFO_BOX.height + 0.5*self.PROGRESS_BAR_HEIGHTs
+        self.PROGRESS_BAR_Y = self.INFO_BOX.y + self.INFO_BOX.height + 0.5*self.PROGRESS_BAR_HEIGHT
         self.PROGRESS_BORDER = pygame.Rect(self.PROGRESS_BAR_X, self.PROGRESS_BAR_Y, self.PROGRESS_BAR_WIDTH, self.PROGRESS_BAR_HEIGHT)
         self.PROGRESS_BG = pygame.Rect(self.PROGRESS_BAR_X+4, self.PROGRESS_BAR_Y+4, self.PROGRESS_BAR_WIDTH-8, self.PROGRESS_BAR_HEIGHT-8)
         self.title_font = FontService.get_regular_font(self.TITLE_SIZE)

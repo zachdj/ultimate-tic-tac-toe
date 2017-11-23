@@ -1,9 +1,10 @@
 import random, numpy, timeit
-from .Bot import Bot
+from .TimeLimitedBot import TimeLimitedBot
 from ..Board import Board
 from services import ApplicationStatusService
 
 # TODO: Save MCTS tree and reuse nodes as moves are chosen
+# TODO: Fixe node scoring function
 
 """
     Some ideas on this implementation:
@@ -13,18 +14,19 @@ from services import ApplicationStatusService
 """
 
 
-class MonteCarloBot(Bot):
+class MonteCarloBot(TimeLimitedBot):
     """
     This bot performs a Monte Carlo Tree Search to find a move
     """
-    def __init__(self, player, time_limit):
+    def __init__(self, player, time_limit=10):
         """
         Creates a new Monte Carlo Tree Search Bot
         :param player: the player that this bot will play as.  Either Board.X or Board.O
         :param time_limit: The maximum computation time, in seconds
         """
-        Bot.__init__(self, player, time_limit, "MCTS Bot")
-        self.player_type = 'mc bot'
+        TimeLimitedBot.__init__(self, player, time_limit, "MCTS Bot")
+        self.time_limit = time_limit
+        self.player_type = 'mcts bot'
         self.game = None  # we'll set this in the setup function
 
         random.seed()

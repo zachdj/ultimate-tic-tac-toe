@@ -7,8 +7,8 @@ class BogoBot(Bot):
     """
     This bot moves at random
     """
-    def __init__(self, player, time_limit=1):
-        Bot.__init__(self, player, time_limit, "BogoBot")
+    def __init__(self, player):
+        Bot.__init__(self, player, "BogoBot")
         self.player_type = 'rng bot'
         random.seed()
 

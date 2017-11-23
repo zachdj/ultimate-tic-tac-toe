@@ -70,18 +70,12 @@ class SetupExperiment(SceneBase):
         # pickers for which two bots will play
         bots = BotLoader.get_bots()
 
-        def p1_picker_callback(value):
-            self.player1_type = value['data']
+        self.player1_picker = Picker(self.QUARTER_X - 0.5*self.PICKER_WIDTH, 200, self.PICKER_WIDTH, self.PICKER_HEIGHT, bots)
+        self.player2_picker = Picker(self.THREE_QUARTER_X - 0.5*self.PICKER_WIDTH, 200, self.PICKER_WIDTH, self.PICKER_HEIGHT, bots)
+        self.widgets.append(self.player1_picker)
+        self.widgets.append(self.player2_picker)
 
-        def p2_picker_callback(value):
-            self.player2_type = value['data']
-
-        player1_picker = Picker(self.QUARTER_X - 0.5*self.PICKER_WIDTH, 200, self.PICKER_WIDTH, self.PICKER_HEIGHT, bots, p1_picker_callback)
-        player2_picker = Picker(self.THREE_QUARTER_X - 0.5*self.PICKER_WIDTH, 200, self.PICKER_WIDTH, self.PICKER_HEIGHT, bots, p2_picker_callback)
-        self.widgets.append(player1_picker)
-        self.widgets.append(player2_picker)
-
-        # pickers for how long each player has to make a move
+        # pickers for how long a bot has to make a move.  Only shown for time-limited bots
         bot_time_limit_options = [
             {"title": "0:01", "data": 1},
             {"title": "0:02", "data": 2},
@@ -99,20 +93,13 @@ class SetupExperiment(SceneBase):
             {"title": "5:00", "data": 300}
         ]
 
-        def p1_time_callback(value):
-            self.player1_time_limit = value['data']
-
-        def p2_time_callback(value):
-            self.player2_time_limit = value['data']
-
-        player1_time_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 420, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, bot_time_limit_options, p1_time_callback,
+        # these are conditionally rendered based on which bot is selected. They do not get added to this scene's widgets
+        self.player1_time_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 420, self.PICKER_WIDTH,
+                                     self.PICKER_HEIGHT, bot_time_limit_options, callback=None,
                                      wrap_values=False, selected_index=0)
-        player2_time_picker = Picker(self.THREE_QUARTER_X - 0.5 * self.PICKER_WIDTH, 420, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, bot_time_limit_options, p2_time_callback,
+        self.player2_time_picker = Picker(self.THREE_QUARTER_X - 0.5 * self.PICKER_WIDTH, 420, self.PICKER_WIDTH,
+                                     self.PICKER_HEIGHT, bot_time_limit_options, callback=None,
                                      wrap_values=False, selected_index=0)
-        self.widgets.append(player1_time_picker)
-        self.widgets.append(player2_time_picker)
 
         # picker for number of games to play
         num_games_options = []
@@ -125,11 +112,8 @@ class SetupExperiment(SceneBase):
         for i in numpy.arange(600, 1600, 100):
             num_games_options.append({'title': str(i), 'data': i})
 
-        def num_games_callback(value):
-            self.num_games = value['data']
-
         num_games_picker = Picker(self.QUARTER_X - 0.5 * self.PICKER_WIDTH, 660, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, num_games_options, num_games_callback,
+                                     self.PICKER_HEIGHT, num_games_options, callback=None,
                                      wrap_values=True, selected_index=18)
         self.widgets.append(num_games_picker)
 
@@ -139,34 +123,41 @@ class SetupExperiment(SceneBase):
             {'title': 'No', 'data': False}
         ]
 
-        def record_result_callback(value):
-            self.record_result = value['data']
-
         record_result_picker = Picker(self.THREE_QUARTER_X - 0.5 * self.PICKER_WIDTH, 660, self.PICKER_WIDTH,
-                                     self.PICKER_HEIGHT, record_result_options, record_result_callback,
+                                     self.PICKER_HEIGHT, record_result_options, callback=None,
                                      wrap_values=True, selected_index=0)
         self.widgets.append(record_result_picker)
 
-        # Data that will be set by form controls:
-        self.player1_type = bots[0]['data']
-        self.player1_time_limit = bot_time_limit_options[0]['data']
-        self.player2_type = bots[0]['data']
-        self.player2_time_limit = bot_time_limit_options[0]['data']
-        self.num_games = num_games_options[18]['data']
-        self.record_result = record_result_options[0]['data']
-
         # button to start the experiment
         def start_experiment():
-            p1 = self.player1_type(Board.X, self.player1_time_limit)
-            p2 = self.player2_type(Board.O, self.player2_time_limit)
-            experiment = Experiment(p1, p2, self.num_games, self.record_result)
+            p1_type = self.player1_picker.get_selected_value()['data']
+            if self.player1_picker.get_selected_value()['requires_time_limit']:
+                p1 = p1_type(Board.X, self.player1_time_picker.get_selected_value()['data'])
+            else:
+                p1 = p1_type(Board.X)
+
+            p2_type = self.player2_picker.get_selected_value()['data']
+            if self.player2_picker.get_selected_value()['requires_time_limit']:
+                p2 = p2_type(Board.O, self.player2_time_picker.get_selected_value()['data'])
+            else:
+                p2 = p2_type(Board.O)
+
+            num_games = num_games_picker.get_selected_value()['data']
+            record_result = record_result_picker.get_selected_value()['data']
+
+            experiment = Experiment(p1, p2, num_games, record_result)
             SceneManager.go_to_experiment(self, experiment)
 
-        start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 850,
-                                   self.PICKER_WIDTH, self.PICKER_HEIGHT, "Start Experiment", start_experiment)
+        start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 850, self.PICKER_WIDTH, self.PICKER_HEIGHT,
+                                "Start Experiment", start_experiment)
         self.widgets.append(start_game_btn)
 
     def process_input(self, events, pressed_keys):
+        if self.player1_picker.get_selected_value()['requires_time_limit']:
+            self.player1_time_picker.process_input(events, pressed_keys)
+        if self.player2_picker.get_selected_value()['requires_time_limit']:
+            self.player2_time_picker.process_input(events, pressed_keys)
+
         for widget in self.widgets:
             widget.process_input(events, pressed_keys)
 
@@ -180,10 +171,16 @@ class SetupExperiment(SceneBase):
         screen.blit(self.title_surface, self.title_location)
         screen.blit(self.p1_label_surface, self.p1_label_location)
         screen.blit(self.p2_label_surface, self.p2_label_location)
-        screen.blit(self.p1_time_label_surface, self.p1_time_label_location)
-        screen.blit(self.p2_time_label_surface, self.p2_time_label_location)
         screen.blit(self.num_games_label_surface, self.num_games_label_location)
         screen.blit(self.record_result_label_surface, self.record_result_label_location)
+
+        if self.player1_picker.get_selected_value()['requires_time_limit']:
+            screen.blit(self.p1_time_label_surface, self.p1_time_label_location)
+            self.player1_time_picker.render(screen)
+
+        if self.player2_picker.get_selected_value()['requires_time_limit']:
+            screen.blit(self.p2_time_label_surface, self.p2_time_label_location)
+            self.player2_time_picker.render(screen)
 
         for widget in self.widgets:
             widget.render(screen)

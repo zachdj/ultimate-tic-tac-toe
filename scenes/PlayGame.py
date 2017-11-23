@@ -1,7 +1,7 @@
 import pygame, numpy, threading, timeit
 from .SceneBase import SceneBase
 from .DrawingUtils import *
-from models.game import Game, Board, Move
+from models.game import Game, Board, Move, TimeLimitedBot
 from services import ImageService, FontService, SceneManager, SettingsService as Settings
 
 
@@ -77,7 +77,7 @@ class PlayGame(SceneBase):
             widget.process_input(events, pressed_keys)
 
         # if the current player is a human, then respond to mouse events
-        if self.game.active_player.player_type == 'human':
+        if not self.game.active_player.is_bot():
             for event in events:
                 if event.type == pygame.MOUSEMOTION:
                     # highlight the move that's about to be selected if the mouse moves over a cell
@@ -127,10 +127,10 @@ class PlayGame(SceneBase):
         # draw box
         aa_border_rounded_rect(screen, self.P1_BOX, Settings.theme['widget_background'], border_color)
         screen.blit(self.p1_name_surface, self.p1_name_location)  # player name
-        # render the timestep for player 1
+        # render the timestamp for player 1
         timestamp = FontService.get_regular_font(self.FONT_SIZE)
 
-        if self.game.active_player.number == Board.X:
+        if isinstance(self.game.active_player, TimeLimitedBot) and self.game.active_player.number == Board.X:
             time_left = -1
             if self.game.active_player.is_bot():
                 now = timeit.default_timer()
@@ -147,8 +147,8 @@ class PlayGame(SceneBase):
         # draw box
         aa_border_rounded_rect(screen, self.P2_BOX, Settings.theme['widget_background'], border_color)
         screen.blit(self.p2_name_surface, self.p2_name_location) # player 2's name
-        # render the timestep for player 2
-        if self.game.active_player.number == Board.O:
+        # render the timestamp for player 2
+        if isinstance(self.game.active_player, TimeLimitedBot) and self.game.active_player.number == Board.O:
             time_left = -1
             if self.game.active_player.is_bot():
                 now = timeit.default_timer()

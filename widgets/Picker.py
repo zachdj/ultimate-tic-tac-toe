@@ -7,7 +7,7 @@ from services import FontService
 
 
 class Picker(WidgetBase):
-    def __init__(self, x, y, width, height, values, callback, wrap_values=True, selected_index=0):
+    def __init__(self, x, y, width, height, values, callback=None, wrap_values=True, selected_index=0):
         """ Picker widget.  Allows user to make a selection from a discrete set of options
 
         The textbox will be 80% of the widget width.  The remaining 20% will be split for left/right buttons on each side
@@ -28,7 +28,7 @@ class Picker(WidgetBase):
                 { data: second_object, title: "different string", ...},
                 ...
             ]
-        :param callback: function called when the selection changes.  The function will be passed the data attribute of the current selection
+        :param callback: optional function to call when the selection changes.  The function will be passed the data attribute of the current selection
         :param wrap_values: boolean controlling whether the Picker will "wrap" when the selected index is out of range.
             For example, suppose the options are [R, G, B] and the picker is currently at B.  If wrap_values is enabled,
             then clicking the right button will update the selected value to R.  Otherwise, it will remain at B.
@@ -66,7 +66,8 @@ class Picker(WidgetBase):
                     elif self.selected_index < 0:
                         self.selected_index = 0
 
-                    self.callback(self.values[self.selected_index])
+                    if self.callback is not None:
+                        self.callback(self.values[self.selected_index])
 
                 elif self.left + self.WIDTH - self.BTN_WIDTH <= x < self.left + self.WIDTH and self.top <= y < self.top + self.HEIGHT:
                     # right button clicked
@@ -77,7 +78,8 @@ class Picker(WidgetBase):
                     elif self.selected_index >= len(self.values):
                         self.selected_index = len(self.values) - 1
 
-                    self.callback(self.values[self.selected_index])
+                    if self.callback is not None:
+                        self.callback(self.values[self.selected_index])
 
     def render(self, surface):
         # draw the textbox with the current label:
@@ -122,7 +124,8 @@ class Picker(WidgetBase):
         if len(new_values) <= self.selected_index:
             self.selected_index = 0
 
-        self.callback(self.values[self.selected_index])
+        if self.callback is not None:
+            self.callback(self.values[self.selected_index])
 
     def get_selected_value(self):
         return self.values[self.selected_index]

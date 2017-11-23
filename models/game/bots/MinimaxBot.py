@@ -1,5 +1,4 @@
-import random, timeit
-from services import ApplicationStatusService
+import random
 from .Bot import Bot
 from models.game.Board import Board
 
@@ -14,7 +13,7 @@ class MinimaxBot(Bot):
 
     Variants of this bot can be implemented by creating a child class which overrides the compute_score() method
     """
-    def __init__(self, number, time_limit=5, name=None):
+    def __init__(self, number, max_depth=5, name=None):
         """
 
         :param number:  Board.X for player1 or Board.O for player2
@@ -22,8 +21,9 @@ class MinimaxBot(Bot):
         """
         if name is None:
             name = "Minimax Bot"
-        Bot.__init__(self, number, time_limit, name=name)
+        Bot.__init__(self, number, name=name)
         self.player_type = 'minimax bot'
+        self.max_depth = max_depth
 
     def is_bot(self):
         return True
@@ -35,24 +35,9 @@ class MinimaxBot(Bot):
         :param valid_moves: valid moves for the agent
         :return: the Move object recommended for this agent
         """
-        depth = 0
-        begin = timeit.default_timer()
-        last_iteration_end_time = timeit.default_timer()
-        selected_move = None
-        # iteratively increase depth until time runs out
-        elapsed_time, estimated_time = 0, 0
-        while elapsed_time + 2*estimated_time < self.time_limit and not ApplicationStatusService.terminated:
-            depth += 1
-            alpha = -float('inf')
-            beta = float('inf')
-            score, selected_move = self._max(board, valid_moves, alpha, beta, depth)
-
-            # update runtime and estimated time for next iteration
-            now = timeit.default_timer()
-            elapsed_time = now - begin
-            estimated_time = now - last_iteration_end_time
-            last_iteration_end_time = now
-
+        alpha = -float('inf')
+        beta = float('inf')
+        score, selected_move = self._max(board, valid_moves, alpha, beta, self.max_depth)
         return selected_move
 
     def _max(self, board, valid_moves, alpha, beta, max_depth):
