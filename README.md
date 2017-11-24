@@ -50,10 +50,11 @@ Interacting with the program's graphical interface is straightforward.  Games ca
 It is fairly simple to create bots that play using the minimax algorithm.  Create a new class in the `models.game.bots` package that extends the `MinimaxBot` class.  You need only provide a definition of the `__init__` method (see `MinimaxExample.py` for an example) and the `compute_score` method.  The `compute_score` method should return a score between -1 and 1 which describes the "goodness" the board **from the perspective of the X player**.
 
 After your bot has been defined, add it to the `BotLoader.py` file to make it available for use in the "Play Game" and "Run Experiment" menus.  The `BotLoader.py` file contains a Python array defining loadable bots.  Each bot must specify the following parameters:
-    - "title": A string with a human-readable name for the bot
-    - "description": Human-readable string describing the bot
-    - "difficulty": An integer from 1-10 describing how good the bot is at the game
-    - "data": The Python class that implements this bot
+
+  - "title": A string with a human-readable name for the bot
+  - "description": Human-readable string describing the bot
+  - "difficulty": An integer from 1-10 describing how good the bot is at the game
+  - "data": The Python class that implements this bot
 
 ### Development
 
