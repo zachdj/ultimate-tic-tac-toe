@@ -1,7 +1,7 @@
 import numpy
 from .SceneBase import SceneBase
 from widgets import Picker, Button
-from models.game import Board, Experiment
+from models.game import Board, Experiment, TimeLimitedBot
 from models.game.bots import BotLoader
 from services import ImageService, FontService, SceneManager, SettingsService as Settings
 
@@ -131,13 +131,13 @@ class SetupExperiment(SceneBase):
         # button to start the experiment
         def start_experiment():
             p1_type = self.player1_picker.get_selected_value()['data']
-            if self.player1_picker.get_selected_value()['requires_time_limit']:
+            if issubclass(p1_type, TimeLimitedBot):
                 p1 = p1_type(Board.X, self.player1_time_picker.get_selected_value()['data'])
             else:
                 p1 = p1_type(Board.X)
 
             p2_type = self.player2_picker.get_selected_value()['data']
-            if self.player2_picker.get_selected_value()['requires_time_limit']:
+            if issubclass(p2_type, TimeLimitedBot):
                 p2 = p2_type(Board.O, self.player2_time_picker.get_selected_value()['data'])
             else:
                 p2 = p2_type(Board.O)
@@ -153,9 +153,9 @@ class SetupExperiment(SceneBase):
         self.widgets.append(start_game_btn)
 
     def process_input(self, events, pressed_keys):
-        if self.player1_picker.get_selected_value()['requires_time_limit']:
+        if issubclass(self.player1_picker.get_selected_value()['data'], TimeLimitedBot):
             self.player1_time_picker.process_input(events, pressed_keys)
-        if self.player2_picker.get_selected_value()['requires_time_limit']:
+        if issubclass(self.player2_picker.get_selected_value()['data'], TimeLimitedBot):
             self.player2_time_picker.process_input(events, pressed_keys)
 
         for widget in self.widgets:
@@ -174,11 +174,11 @@ class SetupExperiment(SceneBase):
         screen.blit(self.num_games_label_surface, self.num_games_label_location)
         screen.blit(self.record_result_label_surface, self.record_result_label_location)
 
-        if self.player1_picker.get_selected_value()['requires_time_limit']:
+        if issubclass(self.player1_picker.get_selected_value()['data'], TimeLimitedBot):
             screen.blit(self.p1_time_label_surface, self.p1_time_label_location)
             self.player1_time_picker.render(screen)
 
-        if self.player2_picker.get_selected_value()['requires_time_limit']:
+        if issubclass(self.player2_picker.get_selected_value()['data'], TimeLimitedBot):
             screen.blit(self.p2_time_label_surface, self.p2_time_label_location)
             self.player2_time_picker.render(screen)
 
