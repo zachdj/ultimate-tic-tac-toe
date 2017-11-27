@@ -11,7 +11,7 @@ This project includes:
 
 ### Installation
 
-This project requires [Python 3.5+](https://www.python.org/downloads/) and [pip](https://pip.pypa.io/en/stable/installing/).  On Windows, you may want to add python and pip to the system path.
+This project requires [Python 3.5+](https://www.python.org/downloads/), [pip](https://pip.pypa.io/en/stable/installing/), and Oracle JDK 1.7+.  On Windows, you may want to add python and pip to the system path.
 
 Clone the repository:
 ```sh
