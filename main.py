@@ -1,4 +1,9 @@
 import pygame
+
+# the jvm is required for doing anything with the weka wrappers.  This can be removed if none of the bots use weka models
+import weka.core.jvm as jvm
+jvm.start()
+
 from services import SceneManager, ApplicationStatusService as Status
 
 pygame.init()
@@ -38,6 +43,7 @@ while active_scene != None:
         if quit_attempt:
             active_scene.terminate()
             Status.terminated = True
+            jvm.stop()
         else:
             filtered_events.append(event)
 

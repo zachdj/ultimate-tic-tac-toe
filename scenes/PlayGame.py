@@ -3,7 +3,7 @@ from .SceneBase import SceneBase
 from .DrawingUtils import *
 from models.game import Game, Board, Move, TimeLimitedBot
 from services import ImageService, FontService, SceneManager, SettingsService as Settings
-
+import javabridge
 
 class PlayGame(SceneBase):
     """
