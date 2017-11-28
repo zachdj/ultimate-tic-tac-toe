@@ -26,6 +26,8 @@ def render_scene():
         for event in pygame.event.get():
             if event.type == pygame.VIDEORESIZE:
                 screen_size = event.size
+            else:
+                pygame.event.post(event)
         scaled_display = pygame.transform.scale(display, screen_size)
         screen.blit(scaled_display, (0, 0))
         pygame.display.flip()
@@ -35,6 +37,7 @@ render_thread = threading.Thread(target=render_scene)
 render_thread.start()
 
 while active_scene != None:
+    global screen_size
     pressed_keys = pygame.key.get_pressed()
 
     # Event filtering
@@ -43,6 +46,8 @@ while active_scene != None:
         quit_attempt = False
         if event.type == pygame.QUIT:
             quit_attempt = True
+        elif event.type == pygame.VIDEORESIZE:
+            screen_size = event.size
         elif event.type == pygame.KEYDOWN:
             alt_pressed = pressed_keys[pygame.K_LALT] or \
                           pressed_keys[pygame.K_RALT]
