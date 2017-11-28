@@ -1,4 +1,5 @@
 import pygame
+import threading
 
 # the jvm is required for doing anything with the weka wrappers.  This can be removed if none of the bots use weka models
 import weka.core.jvm as jvm
@@ -16,6 +17,23 @@ clock = pygame.time.Clock()
 
 active_scene = SceneManager.get_main_menu_instance()
 
+
+def render_scene():
+    while active_scene is not None:
+        active_scene.render(display)
+        # check if screen size has changed
+        global screen_size
+        for event in pygame.event.get():
+            if event.type == pygame.VIDEORESIZE:
+                screen_size = event.size
+        scaled_display = pygame.transform.scale(display, screen_size)
+        screen.blit(scaled_display, (0, 0))
+        pygame.display.flip()
+        clock.tick(60)   # run at a max of 60 fps
+
+render_thread = threading.Thread(target=render_scene)
+render_thread.start()
+
 while active_scene != None:
     pressed_keys = pygame.key.get_pressed()
 
@@ -25,8 +43,6 @@ while active_scene != None:
         quit_attempt = False
         if event.type == pygame.QUIT:
             quit_attempt = True
-        elif event.type == pygame.VIDEORESIZE:
-            screen_size = event.size
         elif event.type == pygame.KEYDOWN:
             alt_pressed = pressed_keys[pygame.K_LALT] or \
                           pressed_keys[pygame.K_RALT]
@@ -49,12 +65,9 @@ while active_scene != None:
 
     active_scene.process_input(filtered_events, pressed_keys)
     active_scene.update()
-    active_scene.render(display)
-
-    scaled_display = pygame.transform.scale(display, screen_size)
-    screen.blit(scaled_display, (0, 0))
+    # active_scene.render(display)
 
     active_scene = active_scene.next
 
-    pygame.display.flip()
+    # pygame.display.flip()
     clock.tick(60)   # run at a max of 60 fps

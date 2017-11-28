@@ -168,6 +168,8 @@ while not game.is_game_over():
     instance = test_board_dm.get_weka_instance(categorical=True)
     score = classifier.classify_instance(instance)
     print(score)
+    score = ((score - 5.0) / 5.0) - 0.1
+    print(score)
 
 print(game.get_winner())
 jvm.stop()

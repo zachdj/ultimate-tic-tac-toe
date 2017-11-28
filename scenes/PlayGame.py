@@ -109,14 +109,11 @@ class PlayGame(SceneBase):
         if bots_turn and not self.bot_is_thinking and not self.game.is_game_over():
             self.bot_is_thinking = True
             self.bot_start_time = timeit.default_timer()
-            def make_bot_move():
-                move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
-                self.game_lock.acquire()
-                self.game.make_move(move)
-                self.game_lock.release()
-                self.bot_is_thinking = False
-            bot_thread = threading.Thread(target=make_bot_move)
-            bot_thread.start()
+            move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
+            self.game_lock.acquire()
+            self.game.make_move(move)
+            self.game_lock.release()
+            self.bot_is_thinking = False
 
     def render(self, screen):
         bg = ImageService.get_game_bg()
