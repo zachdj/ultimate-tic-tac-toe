@@ -1,31 +1,35 @@
 from . import DatabaseConnection as DB
 from models.game.Board import Board
+from weka.core.dataset import Instance, Instances, Attribute
+import weka.core.converters as converters
 
-""" BoardDataModel class
 
-The BoardDataModel class encapsulates the low-level representation of an Ultimate Tic-Tac-Toe board in the database.
-The low-level representation of a board is a tuple with 85 attributes + a primary key.  
-The primary key is a string representation of the flattened board, where 1 indicates an X, 2 indicates an O, 
-    and 0 indicates an empty cell
-    
-The first 81 attributes list the values of the cells of the board starting from the top row.  
-The 82nd attribute is an identifier for the player whose turn comes next
-Attribute 83 is the number of wins recorded for this board state
-Attribute 84 is the number of losses recorded for this board state
-Attribute 85 is the number of ties recorded for this board state
-
-This class provides a high-level interface for serializing/deserializing models.game.GlobalBoard objects to/from the
-low-level board tuples used by the database
-
-"""
+# load weka dataset defns.  These allow us to convert from numpy arrays to weka instances
+categorical_dataset = converters.load_any_file("models/data/datasets/categorical_dataset_defn.arff")
+categorical_dataset.class_is_last()
+continuous_dataset = converters.load_any_file("models/data/datasets/continuous_dataset_defn.arff")
+continuous_dataset.class_is_last()
 
 
 class BoardDataModel(object):
     def __init__(self, global_board):
-        """
-        Initializes a BoardDataModel
+        """ BoardDataModel class
+
+        The BoardDataModel class encapsulates the low-level representation of an Ultimate Tic-Tac-Toe board in the database.
+        The low-level representation of a board is a tuple with 85 attributes + a primary key.
+        The primary key is a string representation of the flattened board, where 1 indicates an X, 2 indicates an O,
+            and 0 indicates an empty cell
+
+        The first 81 attributes list the values of the cells of the board starting from the top row.
+        The 82nd attribute is an identifier for the player whose turn comes next
+        Attribute 83 is the number of wins recorded for this board state
+        Attribute 84 is the number of losses recorded for this board state
+        Attribute 85 is the number of ties recorded for this board state
+
+        This class provides a high-level interface for serializing/deserializing models.game.GlobalBoard objects to/from the
+        low-level board tuples used by the database
+
         :param global_board: the models.game.GlobalBoard to represent
-        :param game_id: the id of the parent GameDataModel stored in this DB
         """
         self.representation = []
         x_count, o_count = 0, 0
@@ -107,4 +111,23 @@ class BoardDataModel(object):
         """
         self._insert_model()
         DB.execute(self.ADD_TIE_SCRIPT)
+
+    def get_weka_instance(self, categorical=False):
+        """
+        Converts this BoardDataModel to a weka.core.datasets.Instance object
+
+        Instance objects must be tied to some dataset.  The continuous version of our board dataset is used by default.
+        If the 'categorical' param is True then the categorical dataset will be used.
+
+        :param categorical: boolean: use the categorical dataset when constructing this instance (default: False)
+        :return: a weka.core.datasets.Instance object representing this instance
+        """
+        instance_vector = self.representation + [self.next_player, 0]  # the zero is a fake score attribute.  Prevents ArrayIndexOutOfBounds errors
+        weka_instance = Instance.create_instance(instance_vector)
+        if categorical:
+            weka_instance.dataset = categorical_dataset
+        else:
+            weka_instance.dataset = continuous_dataset
+
+        return weka_instance
 

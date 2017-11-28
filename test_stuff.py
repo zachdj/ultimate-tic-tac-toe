@@ -1,8 +1,12 @@
 """
 Temporary module for running human tests
 """
+import weka.core.jvm as jvm
+jvm.start()
+
 from models.game import *
 from models.data import DatabaseConnection as DB, GameDataModel, BoardDataModel
+from models.game.bots.MinimaxNeuralNetBot import MinimaxNeuralNetBot
 import timeit, random
 
 
@@ -146,12 +150,24 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 
     DB.close()
 
-p1 = BogoBot(Board.X, 5)
-p2 = BogoBot(Board.O, 5)
-experiment = Experiment(p1, p2, 100, True)
-experiment.run(callback=lambda x,y: print(x))
-
-
 # full_game_experiment(10)
 # mid_game_experiment(1, 15)
 # late_game_experiment(75, 100)
+
+import weka.core.serialization as serialization
+from weka.classifiers import Classifier
+objects = serialization.read_all("models/game/bots/weka_models/mlp_final.model")
+classifier = Classifier(jobject=objects[0])
+
+p1 = MinimaxNeuralNetBot(Board.X)
+p2 = BogoBot(Board.O)
+game = Game(p1, p2)
+while not game.is_game_over():
+    game._take_step()
+    test_board_dm = BoardDataModel(game.board)
+    instance = test_board_dm.get_weka_instance(categorical=True)
+    score = classifier.classify_instance(instance)
+    print(score)
+
+print(game.get_winner())
+jvm.stop()
