@@ -4,7 +4,6 @@ from ..Board import Board
 from services import ApplicationStatusService
 
 # TODO: Save MCTS tree and reuse nodes as moves are chosen
-# TODO: Fixe node scoring function
 
 """
     Some ideas on this implementation:
@@ -45,13 +44,18 @@ class MonteCarloBot(TimeLimitedBot):
             expanded_node = selected_node.expand_node()
             expanded_node.do_playout()
 
-        best_score = 0
+        best_score = -100
         selected_move = None
         for child in root_node.children:
-            if child.games_recorded == 0:  # we shouldn't choose a move with no recorded stats
+            if child.games_recorded == 0:  # a move with no recorded stats is treated like a draw
                 score = 0
             else:
-                score = 1 - (child.wins_recorded / child.games_recorded)  # child will be the opposite player
+                total = child.games_recorded
+                wins = child.wins_recorded
+                ties = child.ties_recorded
+                losses = total - wins - ties
+
+                score = -(wins - losses) / total  # reverse the sign of the score since the child node is the opponent
             if score > best_score:
                 best_score = score
                 selected_move = child.last_move
@@ -63,6 +67,7 @@ class _Node(object):
     def __init__(self, board, last_move, parent=None):
         # setup variables needed to compute child nodes and update the nodes value
         self.wins_recorded = 0
+        self.ties_recorded = 0
         self.games_recorded = 0
         self.board = board
         self.last_move = last_move
@@ -170,4 +175,6 @@ class _Node(object):
             parent.games_recorded += 1
             if parent.player == winner:
                 parent.wins_recorded += 1
+            elif winner == Board.EMPTY or winner == Board.CAT:
+                parent.ties_recorded += 1
             parent = parent.parent
