@@ -37,7 +37,6 @@ render_thread = threading.Thread(target=render_scene)
 render_thread.start()
 
 while active_scene != None:
-    global screen_size
     pressed_keys = pygame.key.get_pressed()
 
     # Event filtering

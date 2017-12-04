@@ -49,8 +49,8 @@ class MinimaxBot(Bot):
         :param beta: the current value of beta (the best score that MIN can guarantee so far)
         :return: the value (score) of the best move and the move object itself
         """
-        if board.board_completed or max_depth == 0:  # termination test
-            if board.winner == Board.EMPTY:
+        if board.board_completed:  # termination test
+            if board.winner == Board.EMPTY or board.winner == Board.CAT:
                 return 0, None
             elif board.winner == self.number:
                 return 1, None

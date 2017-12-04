@@ -27,4 +27,5 @@ class MinimaxNeuralNetBot(MinimaxBot):
         category = self.classifier.classify_instance(weka_instance)  # category will be one of the ten classes
         #  converts the class value into a numeric score between -1 and 1.   E.g. class 1 gets converted to -0.90, class 3 is converted to -0.50, class 10 is converted to 0.90, etc.
         score = ((category - 5.0) / 5.0) - 0.1
+
         return score
