@@ -150,7 +150,10 @@ class SetupExperiment(SceneBase):
 
         start_game_btn = Button(self.CENTER_X - self.PICKER_WIDTH*0.5, 850, self.PICKER_WIDTH, self.PICKER_HEIGHT,
                                 "Start Experiment", start_experiment)
-        self.widgets.append(start_game_btn)
+
+        go_back_btn = Button(36, 36, self.TITLE_SIZE*4, self.TITLE_SIZE, "Go Back", lambda: SceneManager.go_to_main_menu(self))
+
+        self.widgets.extend([start_game_btn, go_back_btn])
 
     def process_input(self, events, pressed_keys):
         if issubclass(self.player1_picker.get_selected_value()['data'], TimeLimitedBot):
