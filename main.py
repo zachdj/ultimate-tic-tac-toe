@@ -1,18 +1,27 @@
 import pygame
 import threading
+import settings as env_settings
 
-# the jvm is required for doing anything with the weka wrappers.  This can be removed if none of the bots use weka models
+# starting a jvm is required for doing anything with the weka wrappers.
+# TODO: Hopefully we can ditch this in the future caz it sucks
 import weka.core.jvm as jvm
 jvm.start()
 
 from services import SceneManager, ApplicationStatusService as Status
 
 pygame.init()
-screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+pygame_display_mode = pygame.RESIZABLE
+# Theres a bug in pygame when using MAC OS - resizable move runs incredibly poorly
+if env_settings.USING_OSX:
+    pygame_display_mode = pygame.FULLSCREEN
+screen = pygame.display.set_mode((0, 0), pygame_display_mode)
 screen_size = screen.get_size()
+
+
+# we will draw on a surface of fixed size then transform it to the actual display size
 LOGICAL_WIDTH = 1920
 LOGICAL_HEIGHT = 1080
-display = pygame.Surface((LOGICAL_WIDTH, LOGICAL_HEIGHT))  # we will draw on this surface then transform it to screen coordinates
+display = pygame.Surface((LOGICAL_WIDTH, LOGICAL_HEIGHT))
 clock = pygame.time.Clock()
 
 active_scene = SceneManager.get_main_menu_instance()
@@ -31,7 +40,6 @@ def render_scene():
         scaled_display = pygame.transform.scale(display, screen_size)
         screen.blit(scaled_display, (0, 0))
         pygame.display.flip()
-        clock.tick(60)   # run at a max of 60 fps
 
 render_thread = threading.Thread(target=render_scene)
 render_thread.start()
