@@ -122,12 +122,15 @@ class BoardDataModel(object):
         :param categorical: boolean: use the categorical dataset when constructing this instance (default: False)
         :return: a weka.core.datasets.Instance object representing this instance
         """
-        instance_vector = self.representation + [self.next_player, 0]  # the zero is a fake score attribute.  Prevents ArrayIndexOutOfBounds errors
-        weka_instance = Instance.create_instance(instance_vector)
+
         if categorical:
+            instance_vector = self.representation + [self.next_player, 5]  # the five is a fake score attribute
+            weka_instance = Instance.create_instance(instance_vector)
             weka_instance.dataset = categorical_dataset
+            weka_instance.set_missing(weka_instance.class_index)
         else:
+            instance_vector = self.representation + [self.next_player, 0]  # the zero is a fake score attribute
+            weka_instance = Instance.create_instance(instance_vector)
             weka_instance.dataset = continuous_dataset
 
         return weka_instance
-
