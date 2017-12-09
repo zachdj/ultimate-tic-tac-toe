@@ -46,7 +46,7 @@ class PlayGame(SceneBase):
 
         self.p2_name = FontService.get_regular_font(self.FONT_SIZE)
         self.p2_name_surface = self.p2_name.render(self.game.player2.name, False, font_color)
-        self.p2_name_size = self.p2_name.size(self.game.player1.name)
+        self.p2_name_size = self.p2_name.size(self.game.player2.name)
         self.p2_name_location = (self.P2_BOX.centerx - 0.5 * self.p2_name_size[0], self.P2_BOX.top + 0.5 * self.p2_name_size[1] + 10)
 
         self.cell_sprites = ImageService.get_board_cell_sprites()

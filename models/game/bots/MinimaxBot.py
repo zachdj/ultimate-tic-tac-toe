@@ -38,7 +38,6 @@ class MinimaxBot(Bot):
         alpha = -float('inf')
         beta = float('inf')
         score, selected_move = self._max(board, valid_moves, alpha, beta, self.max_depth)
-        print(score)
         return selected_move
 
     def _max(self, board, valid_moves, alpha, beta, max_depth):
