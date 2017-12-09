@@ -4,12 +4,13 @@ from ..Board import Board
 from services import ApplicationStatusService
 
 # TODO: Save MCTS tree and reuse nodes as moves are chosen
-
 """
     Some ideas on this implementation:
     (Written at 3:04 am on a Wednesday so take these with a grain or two of salt)
     The bot is currently setup to minimize the chances of player 2s success.  This may be causing it to be content with ties
     Also, the bot assumes the other player is completely random.  This seems to give the bot a predilection towards choosing moves with a high branching factor
+    
+    
 """
 
 
@@ -47,6 +48,13 @@ class MonteCarloBot(TimeLimitedBot):
         best_score = -100
         selected_move = None
         for child in root_node.children:
+            # check if the move wins the game for this player
+            dummy_board = self.game.board.clone()
+            dummy_board.make_move(child.last_move)
+            if dummy_board.winner == self.number:
+                selected_move = child.last_move
+                break
+
             if child.games_recorded == 0:  # a move with no recorded stats is treated like a draw
                 score = 0
             else:

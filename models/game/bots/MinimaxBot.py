@@ -13,7 +13,7 @@ class MinimaxBot(Bot):
 
     Variants of this bot can be implemented by creating a child class which overrides the compute_score() method
     """
-    def __init__(self, number, max_depth=5, name=None):
+    def __init__(self, number, max_depth=4, name=None):
         """
 
         :param number:  Board.X for player1 or Board.O for player2
@@ -38,6 +38,7 @@ class MinimaxBot(Bot):
         alpha = -float('inf')
         beta = float('inf')
         score, selected_move = self._max(board, valid_moves, alpha, beta, self.max_depth)
+        print(score)
         return selected_move
 
     def _max(self, board, valid_moves, alpha, beta, max_depth):
