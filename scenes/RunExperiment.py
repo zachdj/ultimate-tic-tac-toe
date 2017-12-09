@@ -15,6 +15,7 @@ class RunExperiment(SceneBase):
         SceneBase.__init__(self)
         # data to keep track of the experiment's progress
         self.experiment = experiment
+        self.experiment_running = False
         self.total = experiment.iterations
 
         # constants defining where stuff can be drawn
@@ -47,18 +48,6 @@ class RunExperiment(SceneBase):
         self.done_btn = Button(1920*0.5 - 150, self.PROGRESS_BG.bottom + 24,
                                    300, 100, "Done", back_to_mm)
 
-        # unset SQLite objects from the main thread
-        DB.close()
-
-        def run_experiment():
-            # Initialize SQLite objects in this thread
-            DB.init()
-            self.experiment.run()
-            DB.close()
-
-        experiment_thread = threading.Thread(target=run_experiment)
-        experiment_thread.start()
-
     def process_input(self, events, pressed_keys):
         for widget in self.widgets:
             widget.process_input(events, pressed_keys)
@@ -67,7 +56,10 @@ class RunExperiment(SceneBase):
             self.done_btn.process_input(events, pressed_keys)
 
     def update(self):
-        pass
+        if not self.experiment_running:
+            # kick off experiment
+            self.experiment.run()
+            self.experiment_running = True
 
     def render(self, screen):
         bg = ImageService.get_game_bg()
