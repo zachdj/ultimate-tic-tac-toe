@@ -1,11 +1,6 @@
 from .BogoBot import BogoBot
 from .RandoMaxBot import RandoMaxBot
 from .MonteCarloBot import MonteCarloBot
-from .ContinuousNeuralNetBot import ContinuousNeuralNetBot
-from .ModelTreeBot import ModelTreeBot
-from .NominalNeuralNetBot import NominalNeuralNetBot
-from .CostSensitiveNeuralNetBot import CostSensitiveNeuralNetBot
-from .DecisionTreeBot import DecisionTreeBot
 
 """
 The BotLoader module loads a list of all bots with a human-readable name, description, and difficulty (0-10)
@@ -29,41 +24,11 @@ bots = [
         "data": RandoMaxBot
     },
     {
-        "title": "Monte Carlo Search Tree",
-        "description": "Uses the Monte Carlo Search Tree algorithm to play..",
+        "title": "Monte Carlo Tree Search",
+        "description": "Uses the Monte Carlo Tree Search algorithm to play..",
         "difficulty": 3,
         "data": MonteCarloBot
      },
-    {
-        "title": "Nominal MLP Bot",
-        "description": "Minimax bot that uses a nominal neural net to score boards",
-        "difficulty": 5,
-        "data": NominalNeuralNetBot
-    },
-    {
-        "title": "DTree Bot",
-        "description": "Minimax bot that uses a boosted decision tree model to score boards",
-        "difficulty": 5,
-        "data": DecisionTreeBot
-    },
-    {
-        "title": "Continuous MLP Bot",
-        "description": "Minimax bot that uses a neural net to score boards",
-        "difficulty": 5,
-        "data": ContinuousNeuralNetBot
-    },
-    {
-        "title": "Model Tree Bot",
-        "description": "Minimax bot that uses a Model Tree to score boards",
-        "difficulty": 5,
-        "data": ModelTreeBot
-    },
-    {
-        "title": "Cost Sensitive MLP Bot",
-        "description": "Minimax bot that uses a cost-sensitive neural net to score boards",
-        "difficulty": 5,
-        "data": CostSensitiveNeuralNetBot
-    },
 ]
 
 

@@ -1,13 +1,10 @@
 """
-Temporary module for running human tests
+    Script to generate "labelled" data using random playouts
+    A lot of this can now be done with the RunExperiment scene
 """
-import weka.core.jvm as jvm
-jvm.start()
-
 from models.game import *
-from models.data import DatabaseConnection as DB, GameDataModel, BoardDataModel
-from models.game.bots.MinimaxNeuralNetBot import MinimaxNeuralNetBot
-import timeit, random
+from models.data import DatabaseConnection as DB, GameDataModel
+import timeit
 
 
 def full_game_experiment(total_games, purge=10):
@@ -153,23 +150,3 @@ def late_game_experiment(starting_boards, games_per_board, purge=10):
 # full_game_experiment(10)
 # mid_game_experiment(1, 15)
 # late_game_experiment(75, 100)
-
-import weka.core.serialization as serialization
-from weka.classifiers import Classifier
-objects = serialization.read_all("models/game/bots/weka_models/mlp_final.model")
-classifier = Classifier(jobject=objects[0])
-
-p1 = MinimaxNeuralNetBot(Board.X)
-p2 = BogoBot(Board.O)
-game = Game(p1, p2)
-while not game.is_game_over():
-    game._take_step()
-    test_board_dm = BoardDataModel(game.board)
-    instance = test_board_dm.get_weka_instance(categorical=True)
-    score = classifier.classify_instance(instance)
-    print(score)
-    score = ((score - 5.0) / 5.0) - 0.1
-    print(score)
-
-print(game.get_winner())
-jvm.stop()

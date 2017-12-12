@@ -1,15 +1,5 @@
 from . import DatabaseConnection as DB
 from models.game.Board import Board
-from weka.core.dataset import Instance, Instances, Attribute
-import weka.core.converters as converters
-
-
-# load weka dataset defns.  These allow us to convert from numpy arrays to weka instances
-categorical_dataset = converters.load_any_file("models/data/datasets/categorical_dataset_defn.arff")
-categorical_dataset.class_is_last()
-continuous_dataset = converters.load_any_file("models/data/datasets/continuous_dataset_defn.arff")
-continuous_dataset.class_is_last()
-
 
 class BoardDataModel(object):
     def __init__(self, global_board):
@@ -111,26 +101,3 @@ class BoardDataModel(object):
         """
         self._insert_model()
         DB.execute(self.ADD_TIE_SCRIPT)
-
-    def get_weka_instance(self, categorical=False):
-        """
-        Converts this BoardDataModel to a weka.core.datasets.Instance object
-
-        Instance objects must be tied to some dataset.  The continuous version of our board dataset is used by default.
-        If the 'categorical' param is True then the categorical dataset will be used.
-
-        :param categorical: boolean: use the categorical dataset when constructing this instance (default: False)
-        :return: a weka.core.datasets.Instance object representing this instance
-        """
-
-        if categorical:
-            instance_vector = self.representation + [self.next_player, 5]  # the five is a fake score attribute
-            weka_instance = Instance.create_instance(instance_vector)
-            weka_instance.dataset = categorical_dataset
-            weka_instance.set_missing(weka_instance.class_index)
-        else:
-            instance_vector = self.representation + [self.next_player, 0]  # the zero is a fake score attribute
-            weka_instance = Instance.create_instance(instance_vector)
-            weka_instance.dataset = continuous_dataset
-
-        return weka_instance

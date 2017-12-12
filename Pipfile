@@ -5,10 +5,8 @@ name = "pypi"
 
 [packages]
 
-Pygame = "*"
+pygame = "*"
 numpy = "*"
-javabridge = "*"
-"python-weka-wrapper3" = "*"
 
 
 
