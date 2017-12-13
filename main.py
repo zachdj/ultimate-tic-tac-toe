@@ -1,5 +1,4 @@
 import pygame
-import threading
 import settings as env_settings
 from services import SceneManager, ApplicationStatusService as Status
 
@@ -19,30 +18,6 @@ display = pygame.Surface((LOGICAL_WIDTH, LOGICAL_HEIGHT))
 clock = pygame.time.Clock()
 
 active_scene = SceneManager.get_main_menu_instance()
-
-#
-# def render_scene():
-#     done = False
-#     while not done:
-#         active_scene.render(display)
-#         # check if screen size has changed
-#         global screen_size
-#         for event in pygame.event.get():
-#             if event.type == pygame.VIDEORESIZE:
-#                 screen_size = event.size
-#             elif event.type == pygame.QUIT:
-#                 done = True
-#                 pygame.event.post(event)
-#             else:
-#                 pygame.event.post(event)
-#         scaled_display = pygame.transform.scale(display, screen_size)
-#         screen.blit(scaled_display, (0, 0))
-#         pygame.display.flip()
-#
-#     print("done")
-#
-# render_thread = threading.Thread(target=render_scene)
-# render_thread.start()
 
 while active_scene is not None:
     pressed_keys = pygame.key.get_pressed()
@@ -71,9 +46,6 @@ while active_scene is not None:
         if quit_attempt:
             active_scene.terminate()
             Status.terminated = True
-            pygame.display.quit()
-            pygame.quit()
-            exit(0)
         else:
             filtered_events.append(event)
 
@@ -87,5 +59,3 @@ while active_scene is not None:
     pygame.display.flip()
 
     clock.tick(60)   # run at a max of 60 fps
-
-print("done")
