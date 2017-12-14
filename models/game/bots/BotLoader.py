@@ -4,7 +4,6 @@ from .MCTSBot import MCTSBot
 from .Heuristic1Bot import Heuristic1Bot
 from .Heuristic2Bot import Heuristic2Bot
 from .Heuristic3Bot import Heuristic3Bot
-from .Heuristic4Bot import Heuristic4Bot
 
 """
 The BotLoader module loads a list of all bots with a human-readable name, description, and difficulty (0-10)

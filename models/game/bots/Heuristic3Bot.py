@@ -7,16 +7,16 @@ class Heuristic3Bot(MinimaxBot):
     """ Minimax bot that plays using the H3 Heuristic
     """
 
-    def __init__(self, number, max_depth=4, name=None):
+    def __init__(self, number, time_limit=4, name=None):
         """Minimax bot that plays with the H3 heuristic
 
         :param number:  Board.X for player1 or Board.O for player2
-        :param max_depth:  The maximum depth of the lookahead
+        :param time_limit: The maximum time that the bot has to make a move
         :param name: A descriptive name for the Bot
         """
         if name is None:
             name = "Heuristic3 Minimax"
-        MinimaxBot.__init__(self, number, max_depth, name=name)
+        MinimaxBot.__init__(self, number, time_limit, name=name)
         self.player_type = 'h2 minimax'
 
     def compute_score(self, board):

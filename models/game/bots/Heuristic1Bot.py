@@ -5,19 +5,17 @@ from models.game.Board import Board
 
 class Heuristic1Bot(MinimaxBot):
     """ Minimax bot that plays using the H1 heuristic
-
-
     """
-    def __init__(self, number, max_depth=4, name=None):
+    def __init__(self, number, time_limit=10, name=None):
         """ This bot plays using a simple heuristic based on the weighted sum of board positions
 
         :param number:  Board.X for player1 or Board.O for player2
-        :param max_depth:  The maximum depth of the lookahead
+        :param time_limit: The maximum time that the bot has to make a move
         :param name: A descriptive name for the Bot
         """
         if name is None:
             name = "Heuristic1 Minimax"
-        MinimaxBot.__init__(self, number, max_depth, name=name)
+        MinimaxBot.__init__(self, number, time_limit, name=name)
         self.player_type = 'h1 minimax'
 
     def compute_score(self, board):

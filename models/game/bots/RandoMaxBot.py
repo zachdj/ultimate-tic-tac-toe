@@ -7,10 +7,10 @@ class RandoMaxBot(MinimaxBot):
 
     This is a minimax bot that scores moves randomly unless the end of the game is seen within a 2-ply lookahead
     """
-    def __init__(self, number, max_depth=2, name=None):
+    def __init__(self, number, time_limit=2, name=None):
         if name is None:
             name = "Rando-Max Bot"
-        MinimaxBot.__init__(self, number, max_depth, name=name)
+        MinimaxBot.__init__(self, number, time_limit, name=name)
         self.player_type = 'randomax'
         random.seed()
 

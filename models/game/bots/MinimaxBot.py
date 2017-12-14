@@ -1,11 +1,13 @@
-import random
+import random, threading
 from .Bot import Bot
+from .TimeLimitedBot import TimeLimitedBot
 from models.game.Board import Board
+from models.game.bots.IterativeMinimaxThread import IterativeMinimaxThread
 
 # TODO: consider experimenting with some more aggressive pruning.  Perhaps in a child bot?
 
 
-class MinimaxBot(Bot):
+class MinimaxBot(TimeLimitedBot):
     """ Base class for bots that perform a minimax search with a-B pruning
 
     This bot works by performing an iterative-deepening minimax search of the game tree until time runs out.
@@ -13,7 +15,7 @@ class MinimaxBot(Bot):
 
     Variants of this bot can be implemented by creating a child class which overrides the compute_score() method
     """
-    def __init__(self, number, max_depth=4, name=None):
+    def __init__(self, number, time_limit=10, name=None):
         """
 
         :param number:  Board.X for player1 or Board.O for player2
@@ -21,12 +23,8 @@ class MinimaxBot(Bot):
         """
         if name is None:
             name = "Minimax Bot"
-        Bot.__init__(self, number, name=name)
+        TimeLimitedBot.__init__(self, number, time_limit, name=name)
         self.player_type = 'minimax bot'
-        self.max_depth = max_depth
-
-    def is_bot(self):
-        return True
 
     def compute_next_move(self, board, valid_moves):
         """
@@ -35,10 +33,19 @@ class MinimaxBot(Bot):
         :param valid_moves: valid moves for the agent
         :return: the Move object recommended for this agent
         """
-        alpha = -float('inf')
-        beta = float('inf')
-        score, selected_move = self._max(board, valid_moves, alpha, beta, self.max_depth)
-        return selected_move
+
+        search_thread = IterativeMinimaxThread(board, valid_moves, self.number, lambda b: self.compute_score(b))
+        search_thread.start()
+        search_thread.join(timeout=self.time_limit)  # the join times out after the time limit has expired
+        search_thread.stop()  # this will actually cause the thread to terminate
+
+        print(valid_moves[0])
+        print(search_thread.best_move)
+        print(search_thread.max_depth_achieved)
+        print(search_thread.best_score_achieved)
+        print()
+
+        return search_thread.best_move
 
     def _max(self, board, valid_moves, alpha, beta, max_depth):
         """
