@@ -30,7 +30,7 @@ class MCTSBot(TimeLimitedBot):
         if len(self.game.moves) > 0:
             last_move = self.game.moves[-1]
         root_node = _Node(self.game.board, last_move)
-        while (timeit.default_timer() - begin) < self.time_limit and not ApplicationStatusService.terminated:
+        while (timeit.default_timer() - begin) < self.time_limit:
             selected_node = root_node.select_node()
             expanded_node = selected_node.expand_node()
             expanded_node.do_playout()

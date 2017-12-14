@@ -117,6 +117,7 @@ class PlayGame(SceneBase):
         self.game_lock.release()
         if bots_turn and not self.bot_is_thinking and not self.game.is_game_over():
             thread = threading.Thread(target=self.make_bot_move)
+            thread.setDaemon(True)  # Daemon threads will be stopped when main terminates
             thread.start()
 
     def render(self, screen):

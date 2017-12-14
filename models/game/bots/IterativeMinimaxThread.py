@@ -1,5 +1,6 @@
 from threading import Thread
 from models.game import Board
+from services import ApplicationStatusService
 
 
 class IterativeMinimaxThread(Thread):
@@ -7,8 +8,6 @@ class IterativeMinimaxThread(Thread):
         Thread.__init__(self)
         self.done = False # controls when the thread stops
         self.best_move = valid_moves[0]  # this will be updated as the thread runs
-        self.max_depth_achieved = 0
-        self.best_score_achieved = 0
 
         self.board = board
         self.valid_moves = valid_moves
@@ -24,8 +23,6 @@ class IterativeMinimaxThread(Thread):
             beta = float('inf')
             score, best_move = self._max(board_copy, self.valid_moves, alpha, beta, depth)
             self.best_move = best_move
-            self.best_score_achieved = score
-            self.max_depth_achieved += 1
 
     def stop(self):
         self.done = True
@@ -45,7 +42,7 @@ class IterativeMinimaxThread(Thread):
             elif board.winner == self.player:
                 return 10000000, None
             else:
-                return -1000000, None
+                return -10000000, None
         elif max_depth == 0:
             # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
             if self.player == Board.X:
@@ -80,7 +77,7 @@ class IterativeMinimaxThread(Thread):
             elif board.winner == self.player:
                 return 10000000, None
             else:
-                return -1000000, None
+                return -10000000, None
         elif max_depth == 0:
             # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
             if self.player == Board.X:
