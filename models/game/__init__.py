@@ -8,5 +8,5 @@ from .Player import Player
 from .bots.Bot import Bot as Bot
 from .bots.BogoBot import BogoBot
 from .bots.TimeLimitedBot import TimeLimitedBot
-from .bots.MonteCarloBot import MonteCarloBot
+from .bots.MCTSBot import MCTSBot
 from .bots.MinimaxBot import MinimaxBot

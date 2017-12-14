@@ -53,9 +53,9 @@ class MinimaxBot(Bot):
             if board.winner == Board.EMPTY or board.winner == Board.CAT:
                 return 0, None
             elif board.winner == self.number:
-                return 1, None
+                return 10000000, None
             else:
-                return -1, None
+                return -1000000, None
         elif max_depth == 0:
             # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
             if self.number == Board.X:
@@ -85,12 +85,12 @@ class MinimaxBot(Bot):
     def _min(self, board, valid_moves, alpha, beta, max_depth):
         # test for stopping condition
         if board.board_completed:
-            if board.winner == Board.EMPTY:
+            if board.winner == Board.EMPTY or board.winner == Board.CAT:
                 return 0, None
             elif board.winner == self.number:
-                return 1, None
+                return 10000000, None
             else:
-                return -1, None
+                return -1000000, None
         elif max_depth == 0:
             # scores are computed from the perspective of the 'X' player, so they need to be flipped if our bot is 'O'
             if self.number == Board.X:

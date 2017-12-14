@@ -10,7 +10,7 @@ class ExampleMinimaxBot(MinimaxBot):
     the cells of the board and divides by a regularizing constant.
     The scoring function doesn't make any sense.  It just shows how to compute a score if you have a vector of weights
     """
-    def __init__(self, number, max_depth=5, name=None):
+    def __init__(self, number, max_depth=4, name=None):
         """
         The init method should follow this pattern.  Just change the name of the bot.
 

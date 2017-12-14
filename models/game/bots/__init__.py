@@ -1,4 +1,5 @@
 from .Bot import Bot
 from .BogoBot import BogoBot
 from .RandoMaxBot import RandoMaxBot
-from .MonteCarloBot import MonteCarloBot
+from .MCTSBot import MCTSBot
+from .Heuristic1Bot import Heuristic1Bot

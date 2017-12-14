@@ -71,6 +71,16 @@ class PlayGame(SceneBase):
 
                 self.cell_locations[metarow][metacol][row][col] = (location_x, location_y, location_x + self.CELL_SIZE, location_y + self.CELL_SIZE)
 
+        def make_bot_move():
+            self.bot_is_thinking = True
+            self.bot_start_time = timeit.default_timer()
+            move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
+            self.game_lock.acquire()
+            self.game.make_move(move)
+            self.game_lock.release()
+            self.bot_is_thinking = False
+        self.make_bot_move = make_bot_move
+
     def process_input(self, events, pressed_keys):
         for widget in self.widgets:
             widget.process_input(events, pressed_keys)
@@ -106,13 +116,8 @@ class PlayGame(SceneBase):
         bots_turn = self.game.active_player.is_bot()
         self.game_lock.release()
         if bots_turn and not self.bot_is_thinking and not self.game.is_game_over():
-            self.bot_is_thinking = True
-            self.bot_start_time = timeit.default_timer()
-            move = self.game.active_player.compute_next_move(self.game.board, self.game.get_valid_moves())
-            self.game_lock.acquire()
-            self.game.make_move(move)
-            self.game_lock.release()
-            self.bot_is_thinking = False
+            thread = threading.Thread(target=self.make_bot_move)
+            thread.start()
 
     def render(self, screen):
         bg = ImageService.get_game_bg()

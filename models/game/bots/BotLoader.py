@@ -1,6 +1,10 @@
 from .BogoBot import BogoBot
 from .RandoMaxBot import RandoMaxBot
-from .MonteCarloBot import MonteCarloBot
+from .MCTSBot import MCTSBot
+from .Heuristic1Bot import Heuristic1Bot
+from .Heuristic2Bot import Heuristic2Bot
+from .Heuristic3Bot import Heuristic3Bot
+from .Heuristic4Bot import Heuristic4Bot
 
 """
 The BotLoader module loads a list of all bots with a human-readable name, description, and difficulty (0-10)
@@ -26,9 +30,27 @@ bots = [
     {
         "title": "Monte Carlo Tree Search",
         "description": "Uses the Monte Carlo Tree Search algorithm to play..",
-        "difficulty": 3,
-        "data": MonteCarloBot
+        "difficulty": 5,
+        "data": MCTSBot
      },
+    {
+        "title": "Minimax Bot H1",
+        "description": "Uses the H1 heuristic to play",
+        "difficulty": 5,
+        "data": Heuristic1Bot
+     },
+    {
+        "title": "Minimax Bot H2",
+        "description": "Uses the H2 heuristic to play",
+        "difficulty": 6,
+        "data": Heuristic2Bot
+     },
+    {
+        "title": "Minimax Bot H3",
+        "description": "Uses the H3 heuristic to play",
+        "difficulty": 7,
+        "data": Heuristic3Bot
+     }
 ]
 
 
