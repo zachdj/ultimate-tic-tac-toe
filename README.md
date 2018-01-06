@@ -50,7 +50,7 @@ Interacting with the program's graphical interface is straightforward.  Games ca
 
 Much of this codebase was developed as part of a class project for the course "CSCI 6550 - Intro to AI" at the University of Georgia in Fall 2017.  If you're interested in contributing, you can contact me at zach.dean.jones@gmail.com.
 
-Also if you aren't interested in contributing, but you have some good jokes, feel free to email me.
+We setup the gmail account cs4380.uttt@gmail.com to sign up for various services such as Dropbox.
 
 License
 ----
